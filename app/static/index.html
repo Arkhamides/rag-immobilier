@@ -45,9 +45,22 @@
       padding: 12px 16px;
       font-size: 0.93rem;
       line-height: 1.65;
-      white-space: pre-wrap;
       word-break: break-word;
     }
+    .bubble p { margin: 0 0 0.55em; }
+    .bubble p:last-child { margin-bottom: 0; }
+    .bubble h1, .bubble h2, .bubble h3 {
+      font-weight: 700; line-height: 1.3;
+      margin: 0.85em 0 0.25em;
+    }
+    .bubble h1 { font-size: 1.05em; }
+    .bubble h2 { font-size: 0.97em; }
+    .bubble h3 { font-size: 0.93em; color: #555; }
+    .bubble h1:first-child, .bubble h2:first-child, .bubble h3:first-child { margin-top: 0; }
+    .bubble ul, .bubble ol { margin: 0.2em 0 0.55em 1.4em; padding: 0; }
+    .bubble li { margin-bottom: 0.2em; }
+    .bubble hr { border: none; border-top: 1px solid #e0e0da; margin: 0.7em 0; }
+    .bubble strong { font-weight: 700; }
 
     .msg.user .bubble {
       background: #1a1a2e;
@@ -177,12 +190,17 @@
 
     .thinking {
       display: flex;
-      gap: 5px;
+      align-items: center;
+      gap: 8px;
       padding: 14px 16px;
       background: white;
       border: 1px solid #e5e5e0;
       border-radius: 4px 16px 16px 16px;
       width: fit-content;
+    }
+    .dots {
+      display: flex;
+      gap: 5px;
     }
     .dot {
       width: 7px; height: 7px;
@@ -195,6 +213,11 @@
     @keyframes bounce {
       0%, 60%, 100% { transform: translateY(0); background: #bbb; }
       30% { transform: translateY(-6px); background: #888; }
+    }
+    .thinking-label {
+      font-size: 0.75rem;
+      color: #999;
+      font-style: italic;
     }
 
     #clear-btn {
@@ -236,12 +259,52 @@
     // Client-side conversation history sent with every request
     let history = [];
 
-    function renderText(text) {
-      return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/`([^`\n]+)`/g, '<code>$1</code>');
+    function renderMarkdown(text) {
+      const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+      const lines = text.split('\n');
+      let html = '';
+      let inUl = false, inOl = false;
+
+      const closeList = () => {
+        if (inUl) { html += '</ul>'; inUl = false; }
+        if (inOl) { html += '</ol>'; inOl = false; }
+      };
+
+      const inline = s => esc(s)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>');
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const h3 = line.match(/^### (.+)/);
+        const h2 = line.match(/^## (.+)/);
+        const h1 = line.match(/^# (.+)/);
+        const ul = line.match(/^[-*] (.+)/);
+        const ol = line.match(/^\d+\. (.+)/);
+        const hr = line.match(/^---+$/);
+
+        if (h3)      { closeList(); html += `<h3>${inline(h3[1])}</h3>`; }
+        else if (h2) { closeList(); html += `<h2>${inline(h2[1])}</h2>`; }
+        else if (h1) { closeList(); html += `<h1>${inline(h1[1])}</h1>`; }
+        else if (hr) { closeList(); html += '<hr>'; }
+        else if (ul) {
+          if (inOl) { html += '</ol>'; inOl = false; }
+          if (!inUl) { html += '<ul>'; inUl = true; }
+          html += `<li>${inline(ul[1])}</li>`;
+        } else if (ol) {
+          if (inUl) { html += '</ul>'; inUl = false; }
+          if (!inOl) { html += '<ol>'; inOl = true; }
+          html += `<li>${inline(ol[1])}</li>`;
+        } else if (line.trim() === '') {
+          closeList();
+        } else {
+          closeList();
+          html += `<p>${inline(line)}</p>`;
+        }
+      }
+      closeList();
+      return html;
     }
 
     function appendMsg(role, content, meta) {
@@ -250,7 +313,9 @@
 
       const bubble = document.createElement('div');
       bubble.className = 'bubble';
-      bubble.innerHTML = renderText(content);
+      bubble.innerHTML = role === 'user'
+        ? content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        : renderMarkdown(content);
       div.appendChild(bubble);
 
       if (meta) {
@@ -290,13 +355,51 @@
       return div;
     }
 
+    const STAGE_LABELS = {
+      planning: 'Planification…',
+      tools: 'Recherche dans les documents…',
+      solving: 'Rédaction de la réponse…',
+    };
+
     function appendThinking() {
       const div = document.createElement('div');
       div.className = 'msg assistant';
-      div.innerHTML = `<div class="thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+      div.innerHTML = `<div class="thinking"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span class="thinking-label">Planification…</span></div>`;
       chatEl.appendChild(div);
       chatEl.scrollTop = chatEl.scrollHeight;
       return div;
+    }
+
+    function appendMeta(parentDiv, meta) {
+      const metaDiv = document.createElement('div');
+      metaDiv.className = 'meta';
+      metaDiv.innerHTML = [
+        `<span class="badge">${meta.latency_ms} ms</span>`,
+        `<span class="badge">$${meta.cost_usd.toFixed(5)}</span>`,
+        `<span class="badge">relevance ${(meta.retrieval_relevance * 100).toFixed(0)}%</span>`,
+        `<span class="badge">${meta.input_tokens + meta.output_tokens} tokens</span>`,
+      ].join('');
+      parentDiv.appendChild(metaDiv);
+
+      if (meta.sources && meta.sources.length) {
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = ` ${meta.sources.length} source${meta.sources.length > 1 ? 's' : ''}`;
+        details.appendChild(summary);
+        const list = document.createElement('div');
+        list.className = 'sources-list';
+        meta.sources.forEach(s => {
+          const item = document.createElement('div');
+          item.className = 'source-item';
+          const score = s.relevance_score !== undefined
+            ? `<span class="score">${(s.relevance_score * 100).toFixed(1)}%</span>`
+            : '';
+          item.innerHTML = `<span>${s.id}</span>${score}`;
+          list.appendChild(item);
+        });
+        details.appendChild(list);
+        parentDiv.appendChild(details);
+      }
     }
 
     async function send() {
@@ -308,10 +411,16 @@
       sendBtn.disabled = true;
 
       appendMsg('user', query, null);
-      const thinking = appendThinking();
+      const thinkingDiv = appendThinking();
+      const thinkingLabel = thinkingDiv.querySelector('.thinking-label');
+
+      // Live streaming bubble (replaces thinking once first delta arrives)
+      let streamDiv = null;
+      let streamBubble = null;
+      let rawAnswer = '';
 
       try {
-        const res = await fetch('/chat', {
+        const res = await fetch('/chat/stream', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query, history }),
@@ -322,26 +431,81 @@
           throw new Error(err.detail || `HTTP ${res.status}`);
         }
 
-        const data = await res.json();
-        thinking.remove();
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buf = '';
 
-        appendMsg('assistant', data.answer, {
-          latency_ms: data.metrics.latency_ms,
-          cost_usd: data.metrics.cost_usd,
-          retrieval_relevance: data.metrics.retrieval_relevance,
-          input_tokens: data.metrics.input_tokens,
-          output_tokens: data.metrics.output_tokens,
-          sources: data.sources,
-        });
+        // Parse SSE frames from the raw stream
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
 
-        // Accumulate history for multi-turn context
-        history.push({ role: 'user', content: query });
-        history.push({ role: 'assistant', content: data.answer });
+          // SSE frames are separated by double newlines
+          const frames = buf.split('\n\n');
+          buf = frames.pop(); // keep incomplete trailing frame
 
+          for (const frame of frames) {
+            if (!frame.trim()) continue;
+            let eventType = 'message';
+            let dataLine = '';
+            for (const line of frame.split('\n')) {
+              if (line.startsWith('event: ')) eventType = line.slice(7).trim();
+              else if (line.startsWith('data: ')) dataLine = line.slice(6);
+            }
+            if (!dataLine) continue;
+            const payload = JSON.parse(dataLine);
+
+            if (eventType === 'status') {
+              if (thinkingLabel) thinkingLabel.textContent = STAGE_LABELS[payload.stage] || payload.stage;
+            } else if (eventType === 'delta') {
+              // First delta: swap thinking for a live bubble
+              if (!streamDiv) {
+                thinkingDiv.remove();
+                streamDiv = document.createElement('div');
+                streamDiv.className = 'msg assistant';
+                streamBubble = document.createElement('div');
+                streamBubble.className = 'bubble';
+                streamDiv.appendChild(streamBubble);
+                chatEl.appendChild(streamDiv);
+              }
+              rawAnswer += payload.text;
+              streamBubble.innerHTML = renderMarkdown(rawAnswer);
+              chatEl.scrollTop = chatEl.scrollHeight;
+            } else if (eventType === 'done') {
+              // Final answer and metadata
+              thinkingDiv.remove(); // no-op if already removed
+              if (!streamDiv) {
+                // No deltas received — render answer now
+                streamDiv = document.createElement('div');
+                streamDiv.className = 'msg assistant';
+                streamBubble = document.createElement('div');
+                streamBubble.className = 'bubble';
+                streamDiv.appendChild(streamBubble);
+                chatEl.appendChild(streamDiv);
+              }
+              rawAnswer = payload.answer;
+              streamBubble.innerHTML = renderMarkdown(rawAnswer);
+              appendMeta(streamDiv, {
+                latency_ms: payload.metrics.latency_ms,
+                cost_usd: payload.metrics.cost_usd,
+                retrieval_relevance: payload.metrics.retrieval_relevance,
+                input_tokens: payload.metrics.input_tokens,
+                output_tokens: payload.metrics.output_tokens,
+                sources: payload.sources,
+              });
+              chatEl.scrollTop = chatEl.scrollHeight;
+
+              history.push({ role: 'user', content: query });
+              history.push({ role: 'assistant', content: rawAnswer });
+            }
+          }
+        }
       } catch (err) {
-        thinking.remove();
-        const div = appendMsg('assistant', `Erreur : ${err.message}`, null);
-        div.classList.add('error');
+        thinkingDiv.remove();
+        if (streamDiv) streamDiv.remove();
+        const errDiv = appendMsg('assistant', `Erreur : ${err.message}`, null);
+        errDiv.classList.add('error');
       }
 
       sendBtn.disabled = false;

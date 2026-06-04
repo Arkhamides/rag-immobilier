@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import json as _json
+
 from fastapi import APIRouter, Request
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from app.agent import planner, solver
@@ -110,3 +113,98 @@ def chat(body: ChatRequest, request: Request) -> dict:
             "retrieval_relevance": round(retrieval_relevance, 4),
         },
     }
+
+
+def _sse(event: str, data: dict) -> str:
+    return f"event: {event}\ndata: {_json.dumps(data, ensure_ascii=False)}\n\n"
+
+
+@router.post("/chat/stream")
+def chat_stream(body: ChatRequest, request: Request) -> StreamingResponse:
+    state = request.app.state
+    client = state.client
+    chunks = state.chunks
+    embeddings = state.embeddings
+    profiles = state.profiles
+    bm25_index = state.bm25_index
+    cross_encoder = state.cross_encoder
+
+    from app.core.config import settings
+
+    def event_stream():
+        profiler = Profiler()
+
+        # Step 1 — Planner
+        yield _sse("status", {"stage": "planning"})
+        with profiler.span("planner"):
+            tool_plan, planner_usage = planner.plan(body.query, client, history=body.history)
+
+        # Step 2 — Tools
+        yield _sse("status", {"stage": "tools"})
+        tool_results: list[dict] = []
+        with profiler.span("tools"):
+            for tc in tool_plan:
+                result = execute_tool(tc["name"], tc["arguments"], chunks, embeddings, profiles, bm25_index, cross_encoder)
+                tool_results.append({"name": tc["name"], "arguments": tc["arguments"], "result": result})
+
+        # Step 3 — Solver (streaming)
+        yield _sse("status", {"stage": "solving"})
+        answer = ""
+        sources: list[dict] = []
+        solver_usage = None
+        with profiler.span("solver"):
+            for item in solver.solve_stream(body.query, tool_results, chunks, client, history=body.history):
+                if item[0] == "delta":
+                    yield _sse("delta", {"text": item[1]})
+                elif item[0] == "done":
+                    _, answer, sources, solver_usage = item
+
+        latency_ms = profiler.total_ms
+
+        planner_input = getattr(planner_usage, "prompt_tokens", 0) or 0
+        planner_output = getattr(planner_usage, "completion_tokens", 0) or 0
+        solver_input = getattr(solver_usage, "prompt_tokens", 0) or 0
+        solver_output = getattr(solver_usage, "completion_tokens", 0) or 0
+        total_input = planner_input + solver_input
+        total_output = planner_output + solver_output
+        cost_usd = _estimate_cost(total_input, total_output, settings.llm_model)
+
+        retrieval_relevance: float | None = None
+        used_get_dossier = False
+        for tr in tool_results:
+            if tr["name"] == "search_documents" and isinstance(tr["result"], list):
+                for item in tr["result"]:
+                    score = item.get("relevance_score", 0.0)
+                    if retrieval_relevance is None or score > retrieval_relevance:
+                        retrieval_relevance = score
+            elif tr["name"] == "get_dossier_documents":
+                used_get_dossier = True
+        if retrieval_relevance is None:
+            retrieval_relevance = 1.0 if used_get_dossier else 0.0
+
+        metrics_store.record(
+            query=body.query,
+            answer=answer,
+            latency_ms=latency_ms,
+            input_tokens=total_input,
+            output_tokens=total_output,
+            cost_usd=round(cost_usd, 6),
+            retrieval_relevance=round(retrieval_relevance, 4),
+            sources=sources,
+            breakdown=profiler.breakdown,
+        )
+
+        yield _sse("done", {
+            "answer": answer,
+            "sources": sources,
+            "metrics": {
+                "latency_ms": latency_ms,
+                "breakdown": profiler.breakdown,
+                "input_tokens": total_input,
+                "output_tokens": total_output,
+                "cost_usd": round(cost_usd, 6),
+                "retrieval_relevance": round(retrieval_relevance, 4),
+            },
+        })
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")

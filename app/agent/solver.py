@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+from collections.abc import Generator
 
 from openai import OpenAI
 from openai.types.completion_usage import CompletionUsage
@@ -148,3 +149,47 @@ def solve(
 
     logger.info("Solver: answer length=%d, sources=%d", len(answer), len(sources))
     return answer, sources, response.usage
+
+
+def solve_stream(
+    query: str,
+    tool_results: list[dict],
+    chunks: list[Chunk],
+    client: OpenAI,
+    history: list[dict] | None = None,
+) -> Generator[tuple, None, None]:
+    """
+    Streaming solver. Yields:
+      ("delta", str)                      — incremental text chunks
+      ("done", str, list, usage | None)   — full answer, sources, usage object
+    """
+    context = _format_tool_results(tool_results)
+    user_content = f"Question : {query}\n\n=== Résultats des outils ===\n\n{context}\nRéponds à la question en citant les sources pertinentes."
+
+    messages: list[dict] = [{"role": "system", "content": _SYSTEM}]
+    if history:
+        messages.extend(history)
+    messages.append({"role": "user", "content": user_content})
+
+    response = client.chat.completions.create(
+        model=settings.llm_model,
+        messages=messages,
+        temperature=0,
+        stream=True,
+        stream_options={"include_usage": True},
+    )
+
+    full_answer = ""
+    usage = None
+    for chunk in response:
+        if chunk.choices:
+            delta = chunk.choices[0].delta.content or ""
+            if delta:
+                full_answer += delta
+                yield ("delta", delta)
+        if chunk.usage:
+            usage = chunk.usage
+
+    sources = _extract_sources(full_answer, tool_results, chunks)
+    logger.info("Solver (stream): answer length=%d, sources=%d", len(full_answer), len(sources))
+    yield ("done", full_answer, sources, usage)
