@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import json as _json
-from contextlib import contextmanager
-from typing import Generator
 
 from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
@@ -12,12 +10,6 @@ from app.agent import planner, solver
 from app.agent.tools import execute_tool
 from app.metrics.profiler import Profiler
 from app.metrics.store import metrics_store
-
-
-@contextmanager
-def _nullctx() -> Generator[None, None, None]:
-    """No-op context manager used when Langfuse is disabled."""
-    yield None
 
 router = APIRouter(tags=["chat"])
 
@@ -57,24 +49,46 @@ def chat(body: ChatRequest, request: Request) -> dict:
 
     from app.core.config import settings
 
-    with (lf.start_as_current_observation(name="chat", as_type="span", input={"query": body.query}) if lf is not None else _nullctx()) as trace_span:
+    # Root agent span — use start_observation (imperative, no context token) so there
+    # are no OTel context-var tokens to detach. Child spans are linked explicitly by
+    # calling parent_span.start_observation() in planner/solver/tools.
+    trace_span = lf.start_observation(
+        name="chat",
+        as_type="agent",
+        input={"query": body.query},
+    ) if lf is not None else None
+
+    try:
         # Step 1 — Planner
         with profiler.span("planner"):
-            tool_plan, planner_usage = planner.plan(body.query, client, history=body.history, langfuse=lf)
+            tool_plan, planner_usage = planner.plan(
+                body.query, client, history=body.history, parent_span=trace_span
+            )
 
-        # Step 2 — Execute tools (sequentially; all are in-memory, sub-ms each)
+        # Step 2 — Execute tools
         tool_results: list[dict] = []
-        with profiler.span("tools"):
-            with (lf.start_as_current_observation(name="tools", as_type="span", input={"plan": tool_plan}) if lf is not None else _nullctx()) as tool_span:
+        tools_span = trace_span.start_observation(
+            name="tools",
+            as_type="retriever",
+            input={"plan": tool_plan},
+        ) if trace_span is not None else None
+        try:
+            with profiler.span("tools"):
                 for tc in tool_plan:
-                    result = execute_tool(tc["name"], tc["arguments"], chunks, embeddings, profiles, bm25_index, cross_encoder)
+                    result = execute_tool(
+                        tc["name"], tc["arguments"], chunks, embeddings, profiles, bm25_index, cross_encoder
+                    )
                     tool_results.append({"name": tc["name"], "arguments": tc["arguments"], "result": result})
-                if tool_span is not None:
-                    tool_span.update(output={"count": len(tool_results)})
+        finally:
+            if tools_span is not None:
+                tools_span.update(output={"count": len(tool_results)})
+                tools_span.end()
 
         # Step 3 — Solver
         with profiler.span("solver"):
-            answer, sources, solver_usage = solver.solve(body.query, tool_results, chunks, client, history=body.history, langfuse=lf)
+            answer, sources, solver_usage = solver.solve(
+                body.query, tool_results, chunks, client, history=body.history, parent_span=trace_span
+            )
 
         latency_ms = profiler.total_ms
 
@@ -108,9 +122,15 @@ def chat(body: ChatRequest, request: Request) -> dict:
                 metadata={
                     "cost_usd": round(cost_usd, 6),
                     "latency_ms": latency_ms,
-                    "retrieval_relevance": round(retrieval_relevance, 4),
                 },
             )
+            # Record retrieval_relevance as a proper Langfuse score — shows up in the
+            # Scores panel and can be filtered/aggregated across traces.
+            trace_span.score_trace(name="retrieval_relevance", value=round(retrieval_relevance, 4))
+
+    finally:
+        if trace_span is not None:
+            trace_span.end()
 
     metrics_store.record(
         query=body.query,
@@ -158,30 +178,53 @@ def chat_stream(body: ChatRequest, request: Request) -> StreamingResponse:
     def event_stream():
         profiler = Profiler()
 
-        with (lf.start_as_current_observation(name="chat/stream", as_type="span", input={"query": body.query}) if lf is not None else _nullctx()) as trace_span:
+        # Root agent span — imperative form only; no context managers inside this
+        # generator to avoid the OTel context-var detach error across yield points.
+        trace_span = lf.start_observation(
+            name="chat/stream",
+            as_type="agent",
+            input={"query": body.query},
+        ) if lf is not None else None
+
+        answer = ""
+        sources: list[dict] = []
+        solver_usage = None
+        planner_usage = None
+        tool_results: list[dict] = []
+
+        try:
             # Step 1 — Planner
             yield _sse("status", {"stage": "planning"})
             with profiler.span("planner"):
-                tool_plan, planner_usage = planner.plan(body.query, client, history=body.history, langfuse=lf)
+                tool_plan, planner_usage = planner.plan(
+                    body.query, client, history=body.history, parent_span=trace_span
+                )
 
             # Step 2 — Tools
             yield _sse("status", {"stage": "tools"})
-            tool_results: list[dict] = []
-            with profiler.span("tools"):
-                with (lf.start_as_current_observation(name="tools", as_type="span", input={"plan": tool_plan}) if lf is not None else _nullctx()) as tool_span:
+            tools_span = trace_span.start_observation(
+                name="tools",
+                as_type="retriever",
+                input={"plan": tool_plan},
+            ) if trace_span is not None else None
+            try:
+                with profiler.span("tools"):
                     for tc in tool_plan:
-                        result = execute_tool(tc["name"], tc["arguments"], chunks, embeddings, profiles, bm25_index, cross_encoder)
+                        result = execute_tool(
+                            tc["name"], tc["arguments"], chunks, embeddings, profiles, bm25_index, cross_encoder
+                        )
                         tool_results.append({"name": tc["name"], "arguments": tc["arguments"], "result": result})
-                    if tool_span is not None:
-                        tool_span.update(output={"count": len(tool_results)})
+            finally:
+                if tools_span is not None:
+                    tools_span.update(output={"count": len(tool_results)})
+                    tools_span.end()
 
             # Step 3 — Solver (streaming)
             yield _sse("status", {"stage": "solving"})
-            answer = ""
-            sources: list[dict] = []
-            solver_usage = None
             with profiler.span("solver"):
-                for item in solver.solve_stream(body.query, tool_results, chunks, client, history=body.history, langfuse=lf):
+                for item in solver.solve_stream(
+                    body.query, tool_results, chunks, client, history=body.history, parent_span=trace_span
+                ):
                     if item[0] == "delta":
                         yield _sse("delta", {"text": item[1]})
                     elif item[0] == "done":
@@ -216,33 +259,37 @@ def chat_stream(body: ChatRequest, request: Request) -> StreamingResponse:
                     metadata={
                         "cost_usd": round(cost_usd, 6),
                         "latency_ms": latency_ms,
-                        "retrieval_relevance": round(retrieval_relevance, 4),
                     },
                 )
+                trace_span.score_trace(name="retrieval_relevance", value=round(retrieval_relevance, 4))
 
-        metrics_store.record(
-            query=body.query,
-            answer=answer,
-            latency_ms=latency_ms,
-            input_tokens=total_input,
-            output_tokens=total_output,
-            cost_usd=round(cost_usd, 6),
-            retrieval_relevance=round(retrieval_relevance, 4),
-            sources=sources,
-            breakdown=profiler.breakdown,
-        )
+            metrics_store.record(
+                query=body.query,
+                answer=answer,
+                latency_ms=latency_ms,
+                input_tokens=total_input,
+                output_tokens=total_output,
+                cost_usd=round(cost_usd, 6),
+                retrieval_relevance=round(retrieval_relevance, 4),
+                sources=sources,
+                breakdown=profiler.breakdown,
+            )
 
-        yield _sse("done", {
-            "answer": answer,
-            "sources": sources,
-            "metrics": {
-                "latency_ms": latency_ms,
-                "breakdown": profiler.breakdown,
-                "input_tokens": total_input,
-                "output_tokens": total_output,
-                "cost_usd": round(cost_usd, 6),
-                "retrieval_relevance": round(retrieval_relevance, 4),
-            },
-        })
+            yield _sse("done", {
+                "answer": answer,
+                "sources": sources,
+                "metrics": {
+                    "latency_ms": latency_ms,
+                    "breakdown": profiler.breakdown,
+                    "input_tokens": total_input,
+                    "output_tokens": total_output,
+                    "cost_usd": round(cost_usd, 6),
+                    "retrieval_relevance": round(retrieval_relevance, 4),
+                },
+            })
+
+        finally:
+            if trace_span is not None:
+                trace_span.end()
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")

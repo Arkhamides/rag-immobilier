@@ -106,26 +106,25 @@ def plan(
     query: str,
     client: OpenAI,
     history: list[dict] | None = None,
-    langfuse: Any = None,
+    parent_span: Any = None,
 ) -> tuple[list[dict], CompletionUsage | None]:
     """
     Calls the planner LLM and returns (tool_call_list, usage).
-    Each item in tool_call_list: {"name": str, "arguments": dict}
-    history: prior [{role, content}] turns for multi-turn context resolution.
-    langfuse: optional Langfuse client for tracing (generation auto-parented to current span).
+    parent_span: optional Langfuse span; generation is created as an explicit child via
+    parent_span.start_observation(), avoiding OTel context-var management entirely.
     """
     messages: list[dict] = [{"role": "system", "content": _SYSTEM}]
     if history:
         messages.extend(history)
     messages.append({"role": "user", "content": query})
 
-    gen = langfuse.start_observation(
+    gen = parent_span.start_observation(
         name="planner",
         as_type="generation",
         model=settings.llm_model,
         model_parameters={"temperature": 0},
         input=messages,
-    ) if langfuse is not None else None
+    ) if parent_span is not None else None
 
     response = client.chat.completions.create(
         model=settings.llm_model,

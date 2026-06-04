@@ -125,13 +125,13 @@ def solve(
     chunks: list[Chunk],
     client: OpenAI,
     history: list[dict] | None = None,
-    langfuse: Any = None,
+    parent_span: Any = None,
 ) -> tuple[str, list[dict], CompletionUsage | None]:
     """
     Synthesizes a final answer from tool results.
     Returns (answer, sources, usage).
-    history: prior [{role, content}] turns for multi-turn context.
-    langfuse: optional Langfuse client for tracing (generation auto-parented to current span).
+    parent_span: optional Langfuse span; generation is created as an explicit child via
+    parent_span.start_observation(), avoiding OTel context-var management entirely.
     """
     context = _format_tool_results(tool_results)
     user_content = f"Question : {query}\n\n=== Résultats des outils ===\n\n{context}\nRéponds à la question en citant les sources pertinentes."
@@ -141,13 +141,13 @@ def solve(
         messages.extend(history)
     messages.append({"role": "user", "content": user_content})
 
-    gen = langfuse.start_observation(
+    gen = parent_span.start_observation(
         name="solver",
         as_type="generation",
         model=settings.llm_model,
         model_parameters={"temperature": 0},
         input=messages,
-    ) if langfuse is not None else None
+    ) if parent_span is not None else None
 
     response = client.chat.completions.create(
         model=settings.llm_model,
@@ -180,13 +180,14 @@ def solve_stream(
     chunks: list[Chunk],
     client: OpenAI,
     history: list[dict] | None = None,
-    langfuse: Any = None,
+    parent_span: Any = None,
 ) -> Generator[tuple, None, None]:
     """
     Streaming solver. Yields:
       ("delta", str)                      — incremental text chunks
       ("done", str, list, usage | None)   — full answer, sources, usage object
-    langfuse: optional Langfuse client for tracing (generation auto-parented to current span).
+    parent_span: optional Langfuse span; generation is created as an explicit child via
+    parent_span.start_observation(), safe to use inside generators (no context-var tokens).
     """
     context = _format_tool_results(tool_results)
     user_content = f"Question : {query}\n\n=== Résultats des outils ===\n\n{context}\nRéponds à la question en citant les sources pertinentes."
@@ -196,13 +197,13 @@ def solve_stream(
         messages.extend(history)
     messages.append({"role": "user", "content": user_content})
 
-    gen = langfuse.start_observation(
+    gen = parent_span.start_observation(
         name="solver",
         as_type="generation",
         model=settings.llm_model,
         model_parameters={"temperature": 0},
         input=messages,
-    ) if langfuse is not None else None
+    ) if parent_span is not None else None
 
     response = client.chat.completions.create(
         model=settings.llm_model,
