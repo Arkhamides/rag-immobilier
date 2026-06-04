@@ -101,17 +101,24 @@ _SYSTEM = (
 )
 
 
-def plan(query: str, client: OpenAI) -> tuple[list[dict], CompletionUsage | None]:
+def plan(
+    query: str,
+    client: OpenAI,
+    history: list[dict] | None = None,
+) -> tuple[list[dict], CompletionUsage | None]:
     """
     Calls the planner LLM and returns (tool_call_list, usage).
     Each item in tool_call_list: {"name": str, "arguments": dict}
+    history: prior [{role, content}] turns for multi-turn context resolution.
     """
+    messages: list[dict] = [{"role": "system", "content": _SYSTEM}]
+    if history:
+        messages.extend(history)
+    messages.append({"role": "user", "content": query})
+
     response = client.chat.completions.create(
         model=settings.llm_model,
-        messages=[
-            {"role": "system", "content": _SYSTEM},
-            {"role": "user", "content": query},
-        ],
+        messages=messages,
         tools=TOOL_SCHEMAS,
         tool_choice="required",
         temperature=0,

@@ -120,20 +120,24 @@ def solve(
     tool_results: list[dict],
     chunks: list[Chunk],
     client: OpenAI,
+    history: list[dict] | None = None,
 ) -> tuple[str, list[dict], CompletionUsage | None]:
     """
     Synthesizes a final answer from tool results.
     Returns (answer, sources, usage).
+    history: prior [{role, content}] turns for multi-turn context.
     """
     context = _format_tool_results(tool_results)
     user_content = f"Question : {query}\n\n=== Résultats des outils ===\n\n{context}\nRéponds à la question en citant les sources pertinentes."
 
+    messages: list[dict] = [{"role": "system", "content": _SYSTEM}]
+    if history:
+        messages.extend(history)
+    messages.append({"role": "user", "content": user_content})
+
     response = client.chat.completions.create(
         model=settings.llm_model,
-        messages=[
-            {"role": "system", "content": _SYSTEM},
-            {"role": "user", "content": user_content},
-        ],
+        messages=messages,
         temperature=0,
     )
 

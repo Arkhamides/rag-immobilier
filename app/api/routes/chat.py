@@ -28,6 +28,7 @@ def _estimate_cost(input_tokens: int, output_tokens: int, model: str) -> float:
 
 class ChatRequest(BaseModel):
     query: str
+    history: list[dict] = []
 
 
 @router.post("/chat")
@@ -44,7 +45,7 @@ def chat(body: ChatRequest, request: Request) -> dict:
 
     # Step 1 — Planner
     with profiler.span("planner"):
-        tool_plan, planner_usage = planner.plan(body.query, client)
+        tool_plan, planner_usage = planner.plan(body.query, client, history=body.history)
 
     # Step 2 — Execute tools (sequentially; all are in-memory, sub-ms each)
     tool_results: list[dict] = []
@@ -55,7 +56,7 @@ def chat(body: ChatRequest, request: Request) -> dict:
 
     # Step 3 — Solver
     with profiler.span("solver"):
-        answer, sources, solver_usage = solver.solve(body.query, tool_results, chunks, client)
+        answer, sources, solver_usage = solver.solve(body.query, tool_results, chunks, client, history=body.history)
 
     latency_ms = profiler.total_ms
 

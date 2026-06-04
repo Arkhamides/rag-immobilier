@@ -4,6 +4,8 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from openai import OpenAI
 
 from app.api.routes import chat, metrics
@@ -48,6 +50,11 @@ app.include_router(chat.router)
 app.include_router(metrics.router)
 
 
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/ui/")
+
+
 @app.get("/health")
 async def health():
     chunks = getattr(app.state, "chunks", None)
@@ -57,3 +64,6 @@ async def health():
         "chunks": len(chunks) if chunks else 0,
         "profiles": len(profiles) if profiles else 0,
     }
+
+
+app.mount("/ui", StaticFiles(directory="app/static", html=True), name="ui")

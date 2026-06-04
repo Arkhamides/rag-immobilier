@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Primmo — Assistant Notarial</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f0;
+      color: #1a1a1a;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #1a1a2e;
+      color: white;
+      padding: 14px 24px;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em; }
+    header span { font-size: 0.78rem; color: #8888aa; }
+
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .msg { max-width: 760px; width: 100%; }
+    .msg.user { align-self: flex-end; }
+    .msg.assistant { align-self: flex-start; }
+
+    .bubble {
+      padding: 12px 16px;
+      font-size: 0.93rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .msg.user .bubble {
+      background: #1a1a2e;
+      color: white;
+      border-radius: 16px 16px 4px 16px;
+    }
+
+    .msg.assistant .bubble {
+      background: white;
+      border: 1px solid #e5e5e0;
+      border-radius: 4px 16px 16px 16px;
+    }
+
+    .msg.error .bubble {
+      background: #fff5f5;
+      border-color: #fcc;
+      color: #c00;
+      border-radius: 4px 16px 16px 16px;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85em;
+      background: #f0f0ea;
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: #333;
+    }
+
+    .msg.user code { background: #ffffff22; color: #ddd; }
+
+    .meta {
+      margin-top: 8px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f0f0ea;
+      color: #777;
+      border: 1px solid #e0e0da;
+    }
+
+    details { margin-top: 8px; }
+    details summary {
+      font-size: 0.75rem;
+      color: #999;
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    details summary::before { content: '▶'; font-size: 0.6rem; transition: transform 0.15s; }
+    details[open] summary::before { transform: rotate(90deg); }
+    details summary::-webkit-details-marker { display: none; }
+    details summary:hover { color: #444; }
+
+    .sources-list {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .source-item {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      background: #f8f8f4;
+      border-left: 3px solid #d5d5cc;
+      border-radius: 0 4px 4px 0;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      color: #555;
+      display: flex;
+      justify-content: space-between;
+    }
+    .source-item .score { color: #aaa; }
+
+    #input-area {
+      border-top: 1px solid #e0e0da;
+      background: white;
+      padding: 14px 24px;
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    #query {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #d0d0c8;
+      border-radius: 8px;
+      font-size: 0.93rem;
+      font-family: inherit;
+      resize: none;
+      height: 44px;
+      min-height: 44px;
+      max-height: 160px;
+      outline: none;
+      transition: border-color 0.15s;
+      overflow-y: auto;
+      line-height: 1.5;
+    }
+    #query:focus { border-color: #1a1a2e; }
+
+    #send {
+      padding: 0 20px;
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s;
+      height: 44px;
+      flex-shrink: 0;
+    }
+    #send:hover:not(:disabled) { background: #2e2e50; }
+    #send:disabled { background: #ccc; cursor: default; }
+
+    .thinking {
+      display: flex;
+      gap: 5px;
+      padding: 14px 16px;
+      background: white;
+      border: 1px solid #e5e5e0;
+      border-radius: 4px 16px 16px 16px;
+      width: fit-content;
+    }
+    .dot {
+      width: 7px; height: 7px;
+      background: #bbb;
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); background: #bbb; }
+      30% { transform: translateY(-6px); background: #888; }
+    }
+
+    #clear-btn {
+      background: none;
+      border: none;
+      color: #8888aa;
+      font-size: 0.75rem;
+      cursor: pointer;
+      padding: 0 6px;
+      font-family: inherit;
+    }
+    #clear-btn:hover { color: white; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PRIMMO</h1>
+    <span>Assistant Notarial</span>
+    <button id="clear-btn" title="Nouvelle conversation">↺ Nouvelle conversation</button>
+  </header>
+
+  <div id="chat">
+    <div class="msg assistant">
+      <div class="bubble">Bonjour. Posez vos questions sur les dossiers de vente.<br><br>Dossiers disponibles : <code>1</code> Paris 75011 · <code>2</code> Bordeaux · <code>3</code> Lyon</div>
+    </div>
+  </div>
+
+  <div id="input-area">
+    <textarea id="query" placeholder="Ex : Y a-t-il des incohérences dans le dossier 3 ?"></textarea>
+    <button id="send">Envoyer</button>
+  </div>
+
+  <script>
+    const chatEl = document.getElementById('chat');
+    const queryEl = document.getElementById('query');
+    const sendBtn = document.getElementById('send');
+    const clearBtn = document.getElementById('clear-btn');
+
+    // Client-side conversation history sent with every request
+    let history = [];
+
+    function renderText(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/`([^`\n]+)`/g, '<code>$1</code>');
+    }
+
+    function appendMsg(role, content, meta) {
+      const div = document.createElement('div');
+      div.className = `msg ${role}`;
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.innerHTML = renderText(content);
+      div.appendChild(bubble);
+
+      if (meta) {
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'meta';
+        metaDiv.innerHTML = [
+          `<span class="badge">${meta.latency_ms} ms</span>`,
+          `<span class="badge">$${meta.cost_usd.toFixed(5)}</span>`,
+          `<span class="badge">relevance ${(meta.retrieval_relevance * 100).toFixed(0)}%</span>`,
+          `<span class="badge">${meta.input_tokens + meta.output_tokens} tokens</span>`,
+        ].join('');
+        div.appendChild(metaDiv);
+
+        if (meta.sources && meta.sources.length) {
+          const details = document.createElement('details');
+          const summary = document.createElement('summary');
+          summary.textContent = ` ${meta.sources.length} source${meta.sources.length > 1 ? 's' : ''}`;
+          details.appendChild(summary);
+          const list = document.createElement('div');
+          list.className = 'sources-list';
+          meta.sources.forEach(s => {
+            const item = document.createElement('div');
+            item.className = 'source-item';
+            const score = s.relevance_score !== undefined
+              ? `<span class="score">${(s.relevance_score * 100).toFixed(1)}%</span>`
+              : '';
+            item.innerHTML = `<span>${s.id}</span>${score}`;
+            list.appendChild(item);
+          });
+          details.appendChild(list);
+          div.appendChild(details);
+        }
+      }
+
+      chatEl.appendChild(div);
+      chatEl.scrollTop = chatEl.scrollHeight;
+      return div;
+    }
+
+    function appendThinking() {
+      const div = document.createElement('div');
+      div.className = 'msg assistant';
+      div.innerHTML = `<div class="thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+      chatEl.appendChild(div);
+      chatEl.scrollTop = chatEl.scrollHeight;
+      return div;
+    }
+
+    async function send() {
+      const query = queryEl.value.trim();
+      if (!query || sendBtn.disabled) return;
+
+      queryEl.value = '';
+      queryEl.style.height = '44px';
+      sendBtn.disabled = true;
+
+      appendMsg('user', query, null);
+      const thinking = appendThinking();
+
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, history }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }));
+          throw new Error(err.detail || `HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        thinking.remove();
+
+        appendMsg('assistant', data.answer, {
+          latency_ms: data.metrics.latency_ms,
+          cost_usd: data.metrics.cost_usd,
+          retrieval_relevance: data.metrics.retrieval_relevance,
+          input_tokens: data.metrics.input_tokens,
+          output_tokens: data.metrics.output_tokens,
+          sources: data.sources,
+        });
+
+        // Accumulate history for multi-turn context
+        history.push({ role: 'user', content: query });
+        history.push({ role: 'assistant', content: data.answer });
+
+      } catch (err) {
+        thinking.remove();
+        const div = appendMsg('assistant', `Erreur : ${err.message}`, null);
+        div.classList.add('error');
+      }
+
+      sendBtn.disabled = false;
+      queryEl.focus();
+    }
+
+    function clearConversation() {
+      history = [];
+      chatEl.innerHTML = '';
+      appendMsg('assistant', 'Nouvelle conversation. Posez vos questions sur les dossiers de vente.\n\nDossiers disponibles : `1` Paris 75011 · `2` Bordeaux · `3` Lyon', null);
+      queryEl.focus();
+    }
+
+    sendBtn.addEventListener('click', send);
+    clearBtn.addEventListener('click', clearConversation);
+    queryEl.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+    });
+    queryEl.addEventListener('input', () => {
+      queryEl.style.height = 'auto';
+      queryEl.style.height = Math.min(queryEl.scrollHeight, 160) + 'px';
+    });
+  </script>
+</body>
+</html>
