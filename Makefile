@@ -11,4 +11,7 @@ format:
 	ruff format app/
 
 test:
-	pytest tests/
+	pytest tests/ -m "not slow"
+
+eval:
+	pytest tests/ -m slow -v

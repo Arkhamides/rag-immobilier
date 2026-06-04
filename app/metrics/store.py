@@ -109,5 +109,9 @@ class MetricsStore:
         with self._lock:
             return list(self._records)
 
+    def reset(self) -> None:
+        with self._lock:
+            self._records.clear()
+
 
 metrics_store = MetricsStore()
