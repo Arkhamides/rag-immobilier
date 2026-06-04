@@ -12,9 +12,11 @@ from app.ingestion.parser import Chunk
 
 logger = logging.getLogger(__name__)
 
-# Matches full IDs (dossier_1/compromis#VENDEUR) and bare filenames (dossier_1/scan_id_001).
-# Bare matches are resolved to their canonical chunk ID in _extract_sources.
-_CHUNK_ID_RE = re.compile(r"dossier_\d+/[a-z0-9_]+(?:#[A-Za-z0-9_]+)?")
+# Matches full IDs (dossier_1/compromis#VENDEUR, dossier_1/diag_dpe#IDENTIFICATION_(DPE))
+# and bare filenames (dossier_1/scan_id_001).
+# Section names from DPE headers may contain (, ), É etc. — stop at whitespace or backtick.
+# Bare matches (no #section) are resolved in _extract_sources via prefix lookup.
+_CHUNK_ID_RE = re.compile(r"dossier_\d+/[a-z0-9_]+(?:#[^\s`'\"]+)?")
 
 _SYSTEM = f"""Tu es un assistant notarial expert. Tu réponds en français aux questions sur des dossiers de vente immobilière.
 
