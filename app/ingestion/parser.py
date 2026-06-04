@@ -154,9 +154,12 @@ def load_chunks(documents_path: str) -> list[Chunk]:
     chunks: list[Chunk] = []
 
     for dossier_dir in sorted(base.iterdir()):
-        if not dossier_dir.is_dir() or not dossier_dir.name.startswith("dossier_"):
+        if not dossier_dir.is_dir():
             continue
-        dossier_num = int(dossier_dir.name.split("_")[1])
+        m = re.fullmatch(r"dossier_?(\d+)", dossier_dir.name)
+        if not m:
+            continue
+        dossier_num = int(m.group(1))
 
         for json_file in sorted(dossier_dir.glob("*.json")):
             with open(json_file) as f:

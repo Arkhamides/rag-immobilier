@@ -360,8 +360,6 @@ Stored in-memory (thread-safe). Exposed via:
 - `metrics.py`: thread-safe in-memory store, aggregation logic
 - Optional LLM-as-judge relevance scoring
 
-### Step 7 — Documentation
-- Update `README.md` with architecture overview, quickstart, API reference, technical choices
 
 ---
 
