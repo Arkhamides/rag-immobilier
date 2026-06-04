@@ -83,8 +83,8 @@ documents/                 # OCR corpus — not modified at runtime
 | Scaffold | `main.py`, `core/`, `api/` | Done |
 | Ingestion | `ingestion/parser.py`, `ingestion/extractor.py` | Done |
 | RAG engine | `rag/engine.py` | Done (embeddings + cosine search) |
-| Agent | `agent/tools.py`, `agent/planner.py`, `agent/solver.py` | Stub |
-| Metrics | `metrics/store.py` | Stub |
-| API routes | `api/routes/chat.py`, `api/routes/metrics.py` | Stub (501) |
+| Agent | `agent/tools.py`, `agent/planner.py`, `agent/solver.py` | Done |
+| Metrics | `metrics/store.py` | Done |
+| API routes | `api/routes/chat.py`, `api/routes/metrics.py` | Done |
 
-**Next:** Step 4 — implement `agent/tools.py` (3 tools: `search_documents`, `get_dossier_documents`, `get_document_inventory`), `agent/planner.py` (ReWoo planner LLM call), `agent/solver.py` (ReWoo solver LLM call), then wire them into `api/routes/chat.py`.
+All steps complete. `POST /chat` is live; `GET /metrics`, `GET /metrics/history`, and `POST /evaluate` are implemented.

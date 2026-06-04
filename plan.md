@@ -333,32 +333,37 @@ Stored in-memory (thread-safe). Exposed via:
 
 ## Implementation Roadmap
 
-### Step 1 — Project scaffold
+### Step 1 — Project scaffold ✅
 - `app/` package structure, `config.py` (pydantic-settings), `requirements.txt`
 - `Dockerfile`, `docker-compose.yml`, `Makefile`, `.env.example`
+- `config.py`: added `extra="ignore"` so unknown `.env` vars (e.g. `EMBEDDING_MODEL`) don't crash startup
 
-### Step 2 — Ingestion pipeline
+### Step 2 — Ingestion pipeline ✅
 - `parser.py`: OCR JSON → section-level chunks with stable IDs
+  - Dossier directory detection uses `re.fullmatch(r"dossier_?(\d+)", ...)` — accepts `dossier_3` and `dossier3`, rejects non-numeric names without crashing
 - `extractor.py`: one-time LLM pass → structured document profiles
 - Persist profiles and embeddings to disk (avoid re-running on every restart)
 
-### Step 3 — RAG engine
-- `rag.py`: load chunks + embeddings into memory, cosine similarity retrieval
+### Step 3 — RAG engine ✅
+- `rag/engine.py`: load chunks + embeddings into memory, cosine similarity retrieval
 - Support metadata filtering by dossier and doc_type
+- **Known limitation**: `paraphrase-multilingual-MiniLM-L12-v2` scores party-section headers (VENDEUR, ACQUEREUR) poorly against natural language queries — `search_documents` alone is unreliable for named-party lookups; use `get_dossier_documents` instead (handled in planner prompt)
 
-### Step 4 — Tools + agent
-- `tools.py`: implement `search_documents`, `get_dossier_documents`, `get_document_inventory`
-- `planner.py`: Planner LLM — takes query + tool schemas, returns tool call plan (max 5 calls)
-- `solver.py`: Solver LLM — takes query + all tool results, returns final answer with source citations
+### Step 4 — Tools + agent ✅
+- `agent/tools.py`: `search_documents`, `get_dossier_documents`, `get_document_inventory` + `execute_tool` dispatcher
+- `agent/planner.py`: Planner LLM — tool schemas + system prompt with corpus name→dossier mapping (MOREAU→1, DUBOIS/BENALI→2, PETIT/FONTAINE→3) to route named-party queries to `get_dossier_documents` instead of semantic search
+- `agent/solver.py`:
+  - Formats tool results with inline OCR confidence warnings
+  - Extracts cited chunk IDs from answer via regex; resolves bare `dossier_N/filename` references (no `#section`) to their canonical chunk ID via prefix lookup
 
-### Step 5 — API
+### Step 5 — API ✅
 - `main.py`: FastAPI app, lifespan startup (ingestion + indexing)
-- `routes/chat.py`: POST /chat
-- `routes/metrics.py`: GET /metrics, GET /metrics/history
+- `api/routes/chat.py`: `POST /chat` — planner → tool executor → solver → metrics record; `retrieval_relevance` defaults to 1.0 when only `get_dossier_documents` is used (no cosine scores)
+- `api/routes/metrics.py`: `GET /metrics`, `GET /metrics/history`, `POST /evaluate`
 
-### Step 6 — Metrics
-- `metrics.py`: thread-safe in-memory store, aggregation logic
-- Optional LLM-as-judge relevance scoring
+### Step 6 — Metrics ✅
+- `metrics/store.py`: thread-safe in-memory singleton; `get_aggregated()` returns mean/median/p95 latency, total cost, mean retrieval relevance
+- `POST /evaluate`: LLM-as-judge faithfulness scoring over stored interaction IDs
 
 
 ---
