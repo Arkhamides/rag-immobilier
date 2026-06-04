@@ -17,6 +17,7 @@ class InteractionRecord:
     cost_usd: float
     retrieval_relevance: float
     sources: list[dict]
+    breakdown: dict[str, float] = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
 
 
@@ -35,6 +36,7 @@ class MetricsStore:
         cost_usd: float,
         retrieval_relevance: float,
         sources: list[dict],
+        breakdown: dict[str, float] | None = None,
     ) -> str:
         rec = InteractionRecord(
             id=str(uuid.uuid4()),
@@ -46,6 +48,7 @@ class MetricsStore:
             cost_usd=cost_usd,
             retrieval_relevance=retrieval_relevance,
             sources=sources,
+            breakdown=breakdown or {},
         )
         with self._lock:
             self._records.append(rec)
@@ -64,6 +67,7 @@ class MetricsStore:
                     "cost_usd": r.cost_usd,
                     "retrieval_relevance": r.retrieval_relevance,
                     "sources": r.sources,
+                    "breakdown": r.breakdown,
                     "timestamp": r.timestamp,
                 }
                 for r in self._records
