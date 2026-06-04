@@ -28,8 +28,10 @@ Règles strictes :
    N'omet JAMAIS la partie `#section` de l'identifiant.
 3. Si un chunk a une confiance OCR inférieure à {settings.ocr_confidence_threshold}, mentionne-le explicitement.
    Ex : "La CNI de M. FONTAINE (scan_006) présente une qualité OCR faible (confiance : 0.38) — les informations peuvent être inexactes."
-4. Si l'information demandée n'est pas dans les documents fournis, dis-le clairement.
-5. Sois précis, factuel et professionnel."""
+4. Pour tout justificatif de domicile, vérifie que sa date est ≤ 3 mois avant la date du compromis.
+   Si la date dépasse ce délai ou est absente, signale-le explicitement comme non conforme.
+5. Si l'information demandée n'est pas dans les documents fournis, dis-le clairement.
+6. Sois précis, factuel et professionnel."""
 
 
 def _format_tool_results(tool_results: list[dict]) -> str:
