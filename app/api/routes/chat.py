@@ -40,6 +40,8 @@ def chat(body: ChatRequest, request: Request) -> dict:
     chunks = state.chunks
     embeddings = state.embeddings
     profiles = state.profiles
+    bm25_index = state.bm25_index
+    cross_encoder = state.cross_encoder
 
     from app.core.config import settings
 
@@ -51,7 +53,7 @@ def chat(body: ChatRequest, request: Request) -> dict:
     tool_results: list[dict] = []
     with profiler.span("tools"):
         for tc in tool_plan:
-            result = execute_tool(tc["name"], tc["arguments"], chunks, embeddings, profiles)
+            result = execute_tool(tc["name"], tc["arguments"], chunks, embeddings, profiles, bm25_index, cross_encoder)
             tool_results.append({"name": tc["name"], "arguments": tc["arguments"], "result": result})
 
     # Step 3 — Solver

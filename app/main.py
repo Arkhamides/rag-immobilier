@@ -12,7 +12,7 @@ from app.api.routes import chat, metrics
 from app.core.config import settings
 from app.ingestion.extractor import load_or_extract_profiles
 from app.ingestion.parser import load_chunks
-from app.rag.engine import load_or_compute_embeddings
+from app.rag.engine import build_bm25_index, load_cross_encoder, load_or_compute_embeddings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,9 +31,14 @@ async def lifespan(app: FastAPI):
     embeddings = load_or_compute_embeddings(chunks, settings.data_path)
     logger.info("Embeddings: %s", embeddings.shape)
 
+    bm25_index = build_bm25_index(chunks)
+    cross_encoder = load_cross_encoder()
+
     app.state.chunks = chunks
     app.state.profiles = profiles
     app.state.embeddings = embeddings
+    app.state.bm25_index = bm25_index
+    app.state.cross_encoder = cross_encoder
     app.state.client = client
 
     yield
