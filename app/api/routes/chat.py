@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json as _json
+from contextlib import contextmanager
+from typing import Generator
 
 from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
@@ -10,6 +12,12 @@ from app.agent import planner, solver
 from app.agent.tools import execute_tool
 from app.metrics.profiler import Profiler
 from app.metrics.store import metrics_store
+
+
+@contextmanager
+def _nullctx() -> Generator[None, None, None]:
+    """No-op context manager used when Langfuse is disabled."""
+    yield None
 
 router = APIRouter(tags=["chat"])
 
@@ -45,49 +53,64 @@ def chat(body: ChatRequest, request: Request) -> dict:
     profiles = state.profiles
     bm25_index = state.bm25_index
     cross_encoder = state.cross_encoder
+    lf = getattr(state, "langfuse", None)
 
     from app.core.config import settings
 
-    # Step 1 — Planner
-    with profiler.span("planner"):
-        tool_plan, planner_usage = planner.plan(body.query, client, history=body.history)
+    with (lf.start_as_current_observation(name="chat", as_type="span", input={"query": body.query}) if lf is not None else _nullctx()) as trace_span:
+        # Step 1 — Planner
+        with profiler.span("planner"):
+            tool_plan, planner_usage = planner.plan(body.query, client, history=body.history, langfuse=lf)
 
-    # Step 2 — Execute tools (sequentially; all are in-memory, sub-ms each)
-    tool_results: list[dict] = []
-    with profiler.span("tools"):
-        for tc in tool_plan:
-            result = execute_tool(tc["name"], tc["arguments"], chunks, embeddings, profiles, bm25_index, cross_encoder)
-            tool_results.append({"name": tc["name"], "arguments": tc["arguments"], "result": result})
+        # Step 2 — Execute tools (sequentially; all are in-memory, sub-ms each)
+        tool_results: list[dict] = []
+        with profiler.span("tools"):
+            with (lf.start_as_current_observation(name="tools", as_type="span", input={"plan": tool_plan}) if lf is not None else _nullctx()) as tool_span:
+                for tc in tool_plan:
+                    result = execute_tool(tc["name"], tc["arguments"], chunks, embeddings, profiles, bm25_index, cross_encoder)
+                    tool_results.append({"name": tc["name"], "arguments": tc["arguments"], "result": result})
+                if tool_span is not None:
+                    tool_span.update(output={"count": len(tool_results)})
 
-    # Step 3 — Solver
-    with profiler.span("solver"):
-        answer, sources, solver_usage = solver.solve(body.query, tool_results, chunks, client, history=body.history)
+        # Step 3 — Solver
+        with profiler.span("solver"):
+            answer, sources, solver_usage = solver.solve(body.query, tool_results, chunks, client, history=body.history, langfuse=lf)
 
-    latency_ms = profiler.total_ms
+        latency_ms = profiler.total_ms
 
-    # Aggregate token counts from both LLM calls
-    planner_input = getattr(planner_usage, "prompt_tokens", 0) or 0
-    planner_output = getattr(planner_usage, "completion_tokens", 0) or 0
-    solver_input = getattr(solver_usage, "prompt_tokens", 0) or 0
-    solver_output = getattr(solver_usage, "completion_tokens", 0) or 0
-    total_input = planner_input + solver_input
-    total_output = planner_output + solver_output
-    cost_usd = _estimate_cost(total_input, total_output, settings.llm_model)
+        # Aggregate token counts from both LLM calls
+        planner_input = getattr(planner_usage, "prompt_tokens", 0) or 0
+        planner_output = getattr(planner_usage, "completion_tokens", 0) or 0
+        solver_input = getattr(solver_usage, "prompt_tokens", 0) or 0
+        solver_output = getattr(solver_usage, "completion_tokens", 0) or 0
+        total_input = planner_input + solver_input
+        total_output = planner_output + solver_output
+        cost_usd = _estimate_cost(total_input, total_output, settings.llm_model)
 
-    # Retrieval relevance — best cosine score from search_documents, or 1.0 if
-    # only get_dossier_documents was used (all docs explicitly retrieved).
-    retrieval_relevance: float | None = None
-    used_get_dossier = False
-    for tr in tool_results:
-        if tr["name"] == "search_documents" and isinstance(tr["result"], list):
-            for item in tr["result"]:
-                score = item.get("relevance_score", 0.0)
-                if retrieval_relevance is None or score > retrieval_relevance:
-                    retrieval_relevance = score
-        elif tr["name"] == "get_dossier_documents":
-            used_get_dossier = True
-    if retrieval_relevance is None:
-        retrieval_relevance = 1.0 if used_get_dossier else 0.0
+        # Retrieval relevance — best cosine score from search_documents, or 1.0 if
+        # only get_dossier_documents was used (all docs explicitly retrieved).
+        retrieval_relevance: float | None = None
+        used_get_dossier = False
+        for tr in tool_results:
+            if tr["name"] == "search_documents" and isinstance(tr["result"], list):
+                for item in tr["result"]:
+                    score = item.get("relevance_score", 0.0)
+                    if retrieval_relevance is None or score > retrieval_relevance:
+                        retrieval_relevance = score
+            elif tr["name"] == "get_dossier_documents":
+                used_get_dossier = True
+        if retrieval_relevance is None:
+            retrieval_relevance = 1.0 if used_get_dossier else 0.0
+
+        if trace_span is not None:
+            trace_span.update(
+                output={"answer": answer},
+                metadata={
+                    "cost_usd": round(cost_usd, 6),
+                    "latency_ms": latency_ms,
+                    "retrieval_relevance": round(retrieval_relevance, 4),
+                },
+            )
 
     metrics_store.record(
         query=body.query,
@@ -128,59 +151,74 @@ def chat_stream(body: ChatRequest, request: Request) -> StreamingResponse:
     profiles = state.profiles
     bm25_index = state.bm25_index
     cross_encoder = state.cross_encoder
+    lf = getattr(state, "langfuse", None)
 
     from app.core.config import settings
 
     def event_stream():
         profiler = Profiler()
 
-        # Step 1 — Planner
-        yield _sse("status", {"stage": "planning"})
-        with profiler.span("planner"):
-            tool_plan, planner_usage = planner.plan(body.query, client, history=body.history)
+        with (lf.start_as_current_observation(name="chat/stream", as_type="span", input={"query": body.query}) if lf is not None else _nullctx()) as trace_span:
+            # Step 1 — Planner
+            yield _sse("status", {"stage": "planning"})
+            with profiler.span("planner"):
+                tool_plan, planner_usage = planner.plan(body.query, client, history=body.history, langfuse=lf)
 
-        # Step 2 — Tools
-        yield _sse("status", {"stage": "tools"})
-        tool_results: list[dict] = []
-        with profiler.span("tools"):
-            for tc in tool_plan:
-                result = execute_tool(tc["name"], tc["arguments"], chunks, embeddings, profiles, bm25_index, cross_encoder)
-                tool_results.append({"name": tc["name"], "arguments": tc["arguments"], "result": result})
+            # Step 2 — Tools
+            yield _sse("status", {"stage": "tools"})
+            tool_results: list[dict] = []
+            with profiler.span("tools"):
+                with (lf.start_as_current_observation(name="tools", as_type="span", input={"plan": tool_plan}) if lf is not None else _nullctx()) as tool_span:
+                    for tc in tool_plan:
+                        result = execute_tool(tc["name"], tc["arguments"], chunks, embeddings, profiles, bm25_index, cross_encoder)
+                        tool_results.append({"name": tc["name"], "arguments": tc["arguments"], "result": result})
+                    if tool_span is not None:
+                        tool_span.update(output={"count": len(tool_results)})
 
-        # Step 3 — Solver (streaming)
-        yield _sse("status", {"stage": "solving"})
-        answer = ""
-        sources: list[dict] = []
-        solver_usage = None
-        with profiler.span("solver"):
-            for item in solver.solve_stream(body.query, tool_results, chunks, client, history=body.history):
-                if item[0] == "delta":
-                    yield _sse("delta", {"text": item[1]})
-                elif item[0] == "done":
-                    _, answer, sources, solver_usage = item
+            # Step 3 — Solver (streaming)
+            yield _sse("status", {"stage": "solving"})
+            answer = ""
+            sources: list[dict] = []
+            solver_usage = None
+            with profiler.span("solver"):
+                for item in solver.solve_stream(body.query, tool_results, chunks, client, history=body.history, langfuse=lf):
+                    if item[0] == "delta":
+                        yield _sse("delta", {"text": item[1]})
+                    elif item[0] == "done":
+                        _, answer, sources, solver_usage = item
 
-        latency_ms = profiler.total_ms
+            latency_ms = profiler.total_ms
 
-        planner_input = getattr(planner_usage, "prompt_tokens", 0) or 0
-        planner_output = getattr(planner_usage, "completion_tokens", 0) or 0
-        solver_input = getattr(solver_usage, "prompt_tokens", 0) or 0
-        solver_output = getattr(solver_usage, "completion_tokens", 0) or 0
-        total_input = planner_input + solver_input
-        total_output = planner_output + solver_output
-        cost_usd = _estimate_cost(total_input, total_output, settings.llm_model)
+            planner_input = getattr(planner_usage, "prompt_tokens", 0) or 0
+            planner_output = getattr(planner_usage, "completion_tokens", 0) or 0
+            solver_input = getattr(solver_usage, "prompt_tokens", 0) or 0
+            solver_output = getattr(solver_usage, "completion_tokens", 0) or 0
+            total_input = planner_input + solver_input
+            total_output = planner_output + solver_output
+            cost_usd = _estimate_cost(total_input, total_output, settings.llm_model)
 
-        retrieval_relevance: float | None = None
-        used_get_dossier = False
-        for tr in tool_results:
-            if tr["name"] == "search_documents" and isinstance(tr["result"], list):
-                for item in tr["result"]:
-                    score = item.get("relevance_score", 0.0)
-                    if retrieval_relevance is None or score > retrieval_relevance:
-                        retrieval_relevance = score
-            elif tr["name"] == "get_dossier_documents":
-                used_get_dossier = True
-        if retrieval_relevance is None:
-            retrieval_relevance = 1.0 if used_get_dossier else 0.0
+            retrieval_relevance: float | None = None
+            used_get_dossier = False
+            for tr in tool_results:
+                if tr["name"] == "search_documents" and isinstance(tr["result"], list):
+                    for item in tr["result"]:
+                        score = item.get("relevance_score", 0.0)
+                        if retrieval_relevance is None or score > retrieval_relevance:
+                            retrieval_relevance = score
+                elif tr["name"] == "get_dossier_documents":
+                    used_get_dossier = True
+            if retrieval_relevance is None:
+                retrieval_relevance = 1.0 if used_get_dossier else 0.0
+
+            if trace_span is not None:
+                trace_span.update(
+                    output={"answer": answer},
+                    metadata={
+                        "cost_usd": round(cost_usd, 6),
+                        "latency_ms": latency_ms,
+                        "retrieval_relevance": round(retrieval_relevance, 4),
+                    },
+                )
 
         metrics_store.record(
             query=body.query,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+from typing import Any
 
 from openai import OpenAI
 from openai.types.completion_usage import CompletionUsage
@@ -105,16 +106,26 @@ def plan(
     query: str,
     client: OpenAI,
     history: list[dict] | None = None,
+    langfuse: Any = None,
 ) -> tuple[list[dict], CompletionUsage | None]:
     """
     Calls the planner LLM and returns (tool_call_list, usage).
     Each item in tool_call_list: {"name": str, "arguments": dict}
     history: prior [{role, content}] turns for multi-turn context resolution.
+    langfuse: optional Langfuse client for tracing (generation auto-parented to current span).
     """
     messages: list[dict] = [{"role": "system", "content": _SYSTEM}]
     if history:
         messages.extend(history)
     messages.append({"role": "user", "content": query})
+
+    gen = langfuse.start_observation(
+        name="planner",
+        as_type="generation",
+        model=settings.llm_model,
+        model_parameters={"temperature": 0},
+        input=messages,
+    ) if langfuse is not None else None
 
     response = client.chat.completions.create(
         model=settings.llm_model,
@@ -132,6 +143,17 @@ def plan(
         except (json.JSONDecodeError, AttributeError):
             args = {}
         plan_list.append({"name": tc.function.name, "arguments": args})
+
+    if gen is not None:
+        usage = response.usage
+        gen.update(
+            output=plan_list,
+            usage_details={
+                "input": getattr(usage, "prompt_tokens", 0) or 0,
+                "output": getattr(usage, "completion_tokens", 0) or 0,
+            },
+        )
+        gen.end()
 
     logger.info(
         "Planner: %d tool call(s) — %s",

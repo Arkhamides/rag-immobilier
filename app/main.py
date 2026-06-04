@@ -34,14 +34,28 @@ async def lifespan(app: FastAPI):
     bm25_index = build_bm25_index(chunks)
     cross_encoder = load_cross_encoder()
 
+    lf = None
+    if settings.langfuse_public_key and settings.langfuse_secret_key:
+        from langfuse import Langfuse
+        lf = Langfuse(
+            public_key=settings.langfuse_public_key,
+            secret_key=settings.langfuse_secret_key,
+            host=settings.langfuse_base_url,
+        )
+        logger.info("Langfuse: tracing enabled (host=%s)", settings.langfuse_base_url)
+
     app.state.chunks = chunks
     app.state.profiles = profiles
     app.state.embeddings = embeddings
     app.state.bm25_index = bm25_index
     app.state.cross_encoder = cross_encoder
     app.state.client = client
+    app.state.langfuse = lf
 
     yield
+
+    if lf is not None:
+        lf.flush()
 
 
 app = FastAPI(

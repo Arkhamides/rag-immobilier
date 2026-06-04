@@ -14,5 +14,9 @@ class Settings(BaseSettings):
     max_tools_per_plan: int = 5
     ocr_confidence_threshold: float = 0.7
 
+    langfuse_public_key: str = ""
+    langfuse_secret_key: str = ""
+    langfuse_base_url: str = "https://cloud.langfuse.com"
+
 
 settings = Settings()

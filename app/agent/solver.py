@@ -4,6 +4,7 @@ import json
 import logging
 import re
 from collections.abc import Generator
+from typing import Any
 
 from openai import OpenAI
 from openai.types.completion_usage import CompletionUsage
@@ -124,11 +125,13 @@ def solve(
     chunks: list[Chunk],
     client: OpenAI,
     history: list[dict] | None = None,
+    langfuse: Any = None,
 ) -> tuple[str, list[dict], CompletionUsage | None]:
     """
     Synthesizes a final answer from tool results.
     Returns (answer, sources, usage).
     history: prior [{role, content}] turns for multi-turn context.
+    langfuse: optional Langfuse client for tracing (generation auto-parented to current span).
     """
     context = _format_tool_results(tool_results)
     user_content = f"Question : {query}\n\n=== Résultats des outils ===\n\n{context}\nRéponds à la question en citant les sources pertinentes."
@@ -138,6 +141,14 @@ def solve(
         messages.extend(history)
     messages.append({"role": "user", "content": user_content})
 
+    gen = langfuse.start_observation(
+        name="solver",
+        as_type="generation",
+        model=settings.llm_model,
+        model_parameters={"temperature": 0},
+        input=messages,
+    ) if langfuse is not None else None
+
     response = client.chat.completions.create(
         model=settings.llm_model,
         messages=messages,
@@ -145,6 +156,18 @@ def solve(
     )
 
     answer = response.choices[0].message.content or ""
+
+    if gen is not None:
+        usage = response.usage
+        gen.update(
+            output=answer,
+            usage_details={
+                "input": getattr(usage, "prompt_tokens", 0) or 0,
+                "output": getattr(usage, "completion_tokens", 0) or 0,
+            },
+        )
+        gen.end()
+
     sources = _extract_sources(answer, tool_results, chunks)
 
     logger.info("Solver: answer length=%d, sources=%d", len(answer), len(sources))
@@ -157,11 +180,13 @@ def solve_stream(
     chunks: list[Chunk],
     client: OpenAI,
     history: list[dict] | None = None,
+    langfuse: Any = None,
 ) -> Generator[tuple, None, None]:
     """
     Streaming solver. Yields:
       ("delta", str)                      — incremental text chunks
       ("done", str, list, usage | None)   — full answer, sources, usage object
+    langfuse: optional Langfuse client for tracing (generation auto-parented to current span).
     """
     context = _format_tool_results(tool_results)
     user_content = f"Question : {query}\n\n=== Résultats des outils ===\n\n{context}\nRéponds à la question en citant les sources pertinentes."
@@ -170,6 +195,14 @@ def solve_stream(
     if history:
         messages.extend(history)
     messages.append({"role": "user", "content": user_content})
+
+    gen = langfuse.start_observation(
+        name="solver",
+        as_type="generation",
+        model=settings.llm_model,
+        model_parameters={"temperature": 0},
+        input=messages,
+    ) if langfuse is not None else None
 
     response = client.chat.completions.create(
         model=settings.llm_model,
@@ -189,6 +222,16 @@ def solve_stream(
                 yield ("delta", delta)
         if chunk.usage:
             usage = chunk.usage
+
+    if gen is not None:
+        gen.update(
+            output=full_answer,
+            usage_details={
+                "input": getattr(usage, "prompt_tokens", 0) or 0,
+                "output": getattr(usage, "completion_tokens", 0) or 0,
+            },
+        )
+        gen.end()
 
     sources = _extract_sources(full_answer, tool_results, chunks)
     logger.info("Solver (stream): answer length=%d, sources=%d", len(full_answer), len(sources))
