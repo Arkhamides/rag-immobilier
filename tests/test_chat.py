@@ -31,11 +31,11 @@ def mock_llm(monkeypatch):
 
     monkeypatch.setattr(
         "app.agent.planner.plan",
-        lambda query, client: ([{"name": "get_document_inventory", "arguments": {}}], planner_resp.usage),
+        lambda query, client, **kwargs: ([{"name": "get_document_inventory", "arguments": {}}], planner_resp.usage),
     )
     monkeypatch.setattr(
         "app.agent.solver.solve",
-        lambda query, tool_results, chunks, client: (_MOCK_ANSWER, _MOCK_SOURCES, solver_resp.usage),
+        lambda query, tool_results, chunks, client, **kwargs: (_MOCK_ANSWER, _MOCK_SOURCES, solver_resp.usage),
     )
 
 
