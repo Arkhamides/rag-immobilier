@@ -1,0 +1,3204 @@
+{
+  "inputConfig": {
+    "gcsSource": {
+      "uri": "gs://notarial-bucket/dossier_1/scan_id_001_v2.pdf"
+    },
+    "mimeType": "application/pdf"
+  },
+  "responses": [
+    {
+      "fullTextAnnotation": {
+        "pages": [
+          {
+            "property": {
+              "detectedLanguages": [
+                {
+                  "languageCode": "fr",
+                  "confidence": 0.79
+                }
+              ]
+            },
+            "width": 595,
+            "height": 841,
+            "blocks": [
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.035
+                    },
+                    {
+                      "x": 0.2225,
+                      "y": 0.035
+                    },
+                    {
+                      "x": 0.2225,
+                      "y": 0.047
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.047
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.035
+                        },
+                        {
+                          "x": 0.2225,
+                          "y": 0.035
+                        },
+                        {
+                          "x": 0.2225,
+                          "y": 0.047
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.047
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.035
+                            },
+                            {
+                              "x": 0.145,
+                              "y": 0.035
+                            },
+                            {
+                              "x": 0.145,
+                              "y": 0.047
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.047
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "R",
+                            "confidence": 0.8266445
+                          },
+                          {
+                            "text": "E",
+                            "confidence": 0.8159878
+                          },
+                          {
+                            "text": "P",
+                            "confidence": 0.8239087
+                          },
+                          {
+                            "text": "U",
+                            "confidence": 0.8142163
+                          },
+                          {
+                            "text": "B",
+                            "confidence": 0.8067039
+                          },
+                          {
+                            "text": "L",
+                            "confidence": 0.8194773
+                          },
+                          {
+                            "text": "I",
+                            "confidence": 0.806233
+                          },
+                          {
+                            "text": "Q",
+                            "confidence": 0.8084315
+                          },
+                          {
+                            "text": "U",
+                            "confidence": 0.8179453
+                          },
+                          {
+                            "text": "E",
+                            "confidence": 0.8119882,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8151537
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.15,
+                              "y": 0.035
+                            },
+                            {
+                              "x": 0.2175,
+                              "y": 0.035
+                            },
+                            {
+                              "x": 0.2175,
+                              "y": 0.047
+                            },
+                            {
+                              "x": 0.15,
+                              "y": 0.047
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "F",
+                            "confidence": 0.8278601
+                          },
+                          {
+                            "text": "R",
+                            "confidence": 0.8077244
+                          },
+                          {
+                            "text": "A",
+                            "confidence": 0.8225822
+                          },
+                          {
+                            "text": "N",
+                            "confidence": 0.8189453
+                          },
+                          {
+                            "text": "C",
+                            "confidence": 0.823187
+                          },
+                          {
+                            "text": "A",
+                            "confidence": 0.8101908
+                          },
+                          {
+                            "text": "I",
+                            "confidence": 0.8170192
+                          },
+                          {
+                            "text": "S",
+                            "confidence": 0.8153618
+                          },
+                          {
+                            "text": "E",
+                            "confidence": 0.8151826,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8175615
+                      }
+                    ],
+                    "confidence": 0.8163576
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8163576
+              },
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.05
+                    },
+                    {
+                      "x": 0.265,
+                      "y": 0.05
+                    },
+                    {
+                      "x": 0.265,
+                      "y": 0.062
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.062
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.05
+                        },
+                        {
+                          "x": 0.265,
+                          "y": 0.05
+                        },
+                        {
+                          "x": 0.265,
+                          "y": 0.062
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.062
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.05
+                            },
+                            {
+                              "x": 0.1075,
+                              "y": 0.05
+                            },
+                            {
+                              "x": 0.1075,
+                              "y": 0.062
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.062
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "C",
+                            "confidence": 0.8247838
+                          },
+                          {
+                            "text": "A",
+                            "confidence": 0.8277707
+                          },
+                          {
+                            "text": "R",
+                            "confidence": 0.8120237
+                          },
+                          {
+                            "text": "T",
+                            "confidence": 0.8192836
+                          },
+                          {
+                            "text": "E",
+                            "confidence": 0.8190215,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8205767
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.1125,
+                              "y": 0.05
+                            },
+                            {
+                              "x": 0.18,
+                              "y": 0.05
+                            },
+                            {
+                              "x": 0.18,
+                              "y": 0.062
+                            },
+                            {
+                              "x": 0.1125,
+                              "y": 0.062
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "N",
+                            "confidence": 0.8220221
+                          },
+                          {
+                            "text": "A",
+                            "confidence": 0.8267946
+                          },
+                          {
+                            "text": "T",
+                            "confidence": 0.8097791
+                          },
+                          {
+                            "text": "I",
+                            "confidence": 0.8098536
+                          },
+                          {
+                            "text": "O",
+                            "confidence": 0.8201898
+                          },
+                          {
+                            "text": "N",
+                            "confidence": 0.8086123
+                          },
+                          {
+                            "text": "A",
+                            "confidence": 0.8089977
+                          },
+                          {
+                            "text": "L",
+                            "confidence": 0.8067265
+                          },
+                          {
+                            "text": "E",
+                            "confidence": 0.8050615,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8131152
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.185,
+                              "y": 0.05
+                            },
+                            {
+                              "x": 0.26,
+                              "y": 0.05
+                            },
+                            {
+                              "x": 0.26,
+                              "y": 0.062
+                            },
+                            {
+                              "x": 0.185,
+                              "y": 0.062
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "D",
+                            "confidence": 0.8153616
+                          },
+                          {
+                            "text": "'",
+                            "confidence": 0.8186577
+                          },
+                          {
+                            "text": "I",
+                            "confidence": 0.811699
+                          },
+                          {
+                            "text": "D",
+                            "confidence": 0.810324
+                          },
+                          {
+                            "text": "E",
+                            "confidence": 0.82126
+                          },
+                          {
+                            "text": "N",
+                            "confidence": 0.8211687
+                          },
+                          {
+                            "text": "T",
+                            "confidence": 0.8154427
+                          },
+                          {
+                            "text": "I",
+                            "confidence": 0.8208099
+                          },
+                          {
+                            "text": "T",
+                            "confidence": 0.82625
+                          },
+                          {
+                            "text": "E",
+                            "confidence": 0.82312,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8184094
+                      }
+                    ],
+                    "confidence": 0.8173671
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8173671
+              },
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.083
+                    },
+                    {
+                      "x": 0.16,
+                      "y": 0.083
+                    },
+                    {
+                      "x": 0.16,
+                      "y": 0.095
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.095
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.083
+                        },
+                        {
+                          "x": 0.16,
+                          "y": 0.083
+                        },
+                        {
+                          "x": 0.16,
+                          "y": 0.095
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.095
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.083
+                            },
+                            {
+                              "x": 0.0925,
+                              "y": 0.083
+                            },
+                            {
+                              "x": 0.0925,
+                              "y": 0.095
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.095
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "N",
+                            "confidence": 0.8193763
+                          },
+                          {
+                            "text": "o",
+                            "confidence": 0.8202072
+                          },
+                          {
+                            "text": "m",
+                            "confidence": 0.8264744,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8220193
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.0975,
+                              "y": 0.083
+                            },
+                            {
+                              "x": 0.105,
+                              "y": 0.083
+                            },
+                            {
+                              "x": 0.105,
+                              "y": 0.095
+                            },
+                            {
+                              "x": 0.0975,
+                              "y": 0.095
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": ":",
+                            "confidence": 0.8147782,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8147782
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.11,
+                              "y": 0.083
+                            },
+                            {
+                              "x": 0.155,
+                              "y": 0.083
+                            },
+                            {
+                              "x": 0.155,
+                              "y": 0.095
+                            },
+                            {
+                              "x": 0.11,
+                              "y": 0.095
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "M",
+                            "confidence": 0.8175249
+                          },
+                          {
+                            "text": "O",
+                            "confidence": 0.8198956
+                          },
+                          {
+                            "text": "R",
+                            "confidence": 0.8258935
+                          },
+                          {
+                            "text": "E",
+                            "confidence": 0.8240125
+                          },
+                          {
+                            "text": "A",
+                            "confidence": 0.8066424
+                          },
+                          {
+                            "text": "U",
+                            "confidence": 0.8088162,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8171308
+                      }
+                    ],
+                    "confidence": 0.8179761
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8179761
+              },
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.098
+                    },
+                    {
+                      "x": 0.2425,
+                      "y": 0.098
+                    },
+                    {
+                      "x": 0.2425,
+                      "y": 0.11
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.11
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.098
+                        },
+                        {
+                          "x": 0.2425,
+                          "y": 0.098
+                        },
+                        {
+                          "x": 0.2425,
+                          "y": 0.11
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.11
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.098
+                            },
+                            {
+                              "x": 0.1375,
+                              "y": 0.098
+                            },
+                            {
+                              "x": 0.1375,
+                              "y": 0.11
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.11
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "P",
+                            "confidence": 0.8120751
+                          },
+                          {
+                            "text": "r",
+                            "confidence": 0.822226
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8180918
+                          },
+                          {
+                            "text": "n",
+                            "confidence": 0.811638
+                          },
+                          {
+                            "text": "o",
+                            "confidence": 0.8078601
+                          },
+                          {
+                            "text": "m",
+                            "confidence": 0.8208396
+                          },
+                          {
+                            "text": "(",
+                            "confidence": 0.8210939
+                          },
+                          {
+                            "text": "s",
+                            "confidence": 0.8266816
+                          },
+                          {
+                            "text": ")",
+                            "confidence": 0.8165109,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8174463
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.1425,
+                              "y": 0.098
+                            },
+                            {
+                              "x": 0.15,
+                              "y": 0.098
+                            },
+                            {
+                              "x": 0.15,
+                              "y": 0.11
+                            },
+                            {
+                              "x": 0.1425,
+                              "y": 0.11
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": ":",
+                            "confidence": 0.8163573,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8163573
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.155,
+                              "y": 0.098
+                            },
+                            {
+                              "x": 0.2375,
+                              "y": 0.098
+                            },
+                            {
+                              "x": 0.2375,
+                              "y": 0.11
+                            },
+                            {
+                              "x": 0.155,
+                              "y": 0.11
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "J",
+                            "confidence": 0.8068502
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8059168
+                          },
+                          {
+                            "text": "a",
+                            "confidence": 0.8149367
+                          },
+                          {
+                            "text": "n",
+                            "confidence": 0.8124134
+                          },
+                          {
+                            "text": "-",
+                            "confidence": 0.8107585
+                          },
+                          {
+                            "text": "P",
+                            "confidence": 0.8071005
+                          },
+                          {
+                            "text": "i",
+                            "confidence": 0.827124
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.824227
+                          },
+                          {
+                            "text": "r",
+                            "confidence": 0.8182296
+                          },
+                          {
+                            "text": "r",
+                            "confidence": 0.8268681
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8279902,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8165832
+                      }
+                    ],
+                    "confidence": 0.8167956
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8167956
+              },
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.113
+                    },
+                    {
+                      "x": 0.24,
+                      "y": 0.113
+                    },
+                    {
+                      "x": 0.24,
+                      "y": 0.125
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.125
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.113
+                        },
+                        {
+                          "x": 0.24,
+                          "y": 0.113
+                        },
+                        {
+                          "x": 0.24,
+                          "y": 0.125
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.125
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.1,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.1,
+                              "y": 0.125
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.125
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "S",
+                            "confidence": 0.8204625
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8111988
+                          },
+                          {
+                            "text": "x",
+                            "confidence": 0.8059253
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8223942,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8149952
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.105,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.1125,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.1125,
+                              "y": 0.125
+                            },
+                            {
+                              "x": 0.105,
+                              "y": 0.125
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": ":",
+                            "confidence": 0.8158215,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8158215
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.1175,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.125,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.125,
+                              "y": 0.125
+                            },
+                            {
+                              "x": 0.1175,
+                              "y": 0.125
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "M",
+                            "confidence": 0.8199847,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8199847
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.13,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.175,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.175,
+                              "y": 0.125
+                            },
+                            {
+                              "x": 0.13,
+                              "y": 0.125
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "T",
+                            "confidence": 0.8260697
+                          },
+                          {
+                            "text": "a",
+                            "confidence": 0.8091743
+                          },
+                          {
+                            "text": "i",
+                            "confidence": 0.8184626
+                          },
+                          {
+                            "text": "l",
+                            "confidence": 0.8196
+                          },
+                          {
+                            "text": "l",
+                            "confidence": 0.8163097
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8070986,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8161192
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.18,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.1875,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.1875,
+                              "y": 0.125
+                            },
+                            {
+                              "x": 0.18,
+                              "y": 0.125
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": ":",
+                            "confidence": 0.8130031,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8130031
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.1925,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.2225,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.2225,
+                              "y": 0.125
+                            },
+                            {
+                              "x": 0.1925,
+                              "y": 0.125
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "1",
+                            "confidence": 0.8126661
+                          },
+                          {
+                            "text": ",",
+                            "confidence": 0.8204131
+                          },
+                          {
+                            "text": "7",
+                            "confidence": 0.8247279
+                          },
+                          {
+                            "text": "8",
+                            "confidence": 0.8125855,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8175982
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.2275,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.235,
+                              "y": 0.113
+                            },
+                            {
+                              "x": 0.235,
+                              "y": 0.125
+                            },
+                            {
+                              "x": 0.2275,
+                              "y": 0.125
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "m",
+                            "confidence": 0.8209545,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8209545
+                      }
+                    ],
+                    "confidence": 0.8169252
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8169252
+              },
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.128
+                    },
+                    {
+                      "x": 0.225,
+                      "y": 0.128
+                    },
+                    {
+                      "x": 0.225,
+                      "y": 0.14
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.14
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.128
+                        },
+                        {
+                          "x": 0.225,
+                          "y": 0.128
+                        },
+                        {
+                          "x": 0.225,
+                          "y": 0.14
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.14
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.128
+                            },
+                            {
+                              "x": 0.1075,
+                              "y": 0.128
+                            },
+                            {
+                              "x": 0.1075,
+                              "y": 0.14
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.14
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "N",
+                            "confidence": 0.811629
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8267395
+                          },
+                          {
+                            "text": "(",
+                            "confidence": 0.823712
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8176522
+                          },
+                          {
+                            "text": ")",
+                            "confidence": 0.815461,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8190387
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.1125,
+                              "y": 0.128
+                            },
+                            {
+                              "x": 0.1275,
+                              "y": 0.128
+                            },
+                            {
+                              "x": 0.1275,
+                              "y": 0.14
+                            },
+                            {
+                              "x": 0.1125,
+                              "y": 0.14
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "l",
+                            "confidence": 0.8122339
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8124353,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8123346
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.1325,
+                              "y": 0.128
+                            },
+                            {
+                              "x": 0.14,
+                              "y": 0.128
+                            },
+                            {
+                              "x": 0.14,
+                              "y": 0.14
+                            },
+                            {
+                              "x": 0.1325,
+                              "y": 0.14
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": ":",
+                            "confidence": 0.8273142,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8273142
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.145,
+                              "y": 0.128
+                            },
+                            {
+                              "x": 0.22,
+                              "y": 0.128
+                            },
+                            {
+                              "x": 0.22,
+                              "y": 0.14
+                            },
+                            {
+                              "x": 0.145,
+                              "y": 0.14
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "1",
+                            "confidence": 0.814296
+                          },
+                          {
+                            "text": "5",
+                            "confidence": 0.8168357
+                          },
+                          {
+                            "text": "/",
+                            "confidence": 0.8277267
+                          },
+                          {
+                            "text": "0",
+                            "confidence": 0.8201262
+                          },
+                          {
+                            "text": "3",
+                            "confidence": 0.8174797
+                          },
+                          {
+                            "text": "/",
+                            "confidence": 0.8145047
+                          },
+                          {
+                            "text": "1",
+                            "confidence": 0.8093144
+                          },
+                          {
+                            "text": "9",
+                            "confidence": 0.8133209
+                          },
+                          {
+                            "text": "5",
+                            "confidence": 0.8223982
+                          },
+                          {
+                            "text": "8",
+                            "confidence": 0.8193844,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8175387
+                      }
+                    ],
+                    "confidence": 0.8190565
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8190565
+              },
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.143
+                    },
+                    {
+                      "x": 0.1725,
+                      "y": 0.143
+                    },
+                    {
+                      "x": 0.1725,
+                      "y": 0.155
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.155
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.143
+                        },
+                        {
+                          "x": 0.1725,
+                          "y": 0.143
+                        },
+                        {
+                          "x": 0.1725,
+                          "y": 0.155
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.155
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.143
+                            },
+                            {
+                              "x": 0.0775,
+                              "y": 0.143
+                            },
+                            {
+                              "x": 0.0775,
+                              "y": 0.155
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.155
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "a",
+                            "confidence": 0.8224798,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8224798
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.0825,
+                              "y": 0.143
+                            },
+                            {
+                              "x": 0.09,
+                              "y": 0.143
+                            },
+                            {
+                              "x": 0.09,
+                              "y": 0.155
+                            },
+                            {
+                              "x": 0.0825,
+                              "y": 0.155
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": ":",
+                            "confidence": 0.8096818,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8096818
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.095,
+                              "y": 0.143
+                            },
+                            {
+                              "x": 0.1325,
+                              "y": 0.143
+                            },
+                            {
+                              "x": 0.1325,
+                              "y": 0.155
+                            },
+                            {
+                              "x": 0.095,
+                              "y": 0.155
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "P",
+                            "confidence": 0.8176321
+                          },
+                          {
+                            "text": "a",
+                            "confidence": 0.8263365
+                          },
+                          {
+                            "text": "r",
+                            "confidence": 0.8150767
+                          },
+                          {
+                            "text": "i",
+                            "confidence": 0.8210598
+                          },
+                          {
+                            "text": "s",
+                            "confidence": 0.8077928,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8175796
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.1375,
+                              "y": 0.143
+                            },
+                            {
+                              "x": 0.1675,
+                              "y": 0.143
+                            },
+                            {
+                              "x": 0.1675,
+                              "y": 0.155
+                            },
+                            {
+                              "x": 0.1375,
+                              "y": 0.155
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "(",
+                            "confidence": 0.8273824
+                          },
+                          {
+                            "text": "7",
+                            "confidence": 0.819004
+                          },
+                          {
+                            "text": "5",
+                            "confidence": 0.8105038
+                          },
+                          {
+                            "text": ")",
+                            "confidence": 0.8086427,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8163832
+                      }
+                    ],
+                    "confidence": 0.8165311
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8165311
+              },
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.158
+                    },
+                    {
+                      "x": 0.2425,
+                      "y": 0.158
+                    },
+                    {
+                      "x": 0.2425,
+                      "y": 0.17
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.17
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.158
+                        },
+                        {
+                          "x": 0.2425,
+                          "y": 0.158
+                        },
+                        {
+                          "x": 0.2425,
+                          "y": 0.17
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.17
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.158
+                            },
+                            {
+                              "x": 0.1525,
+                              "y": 0.158
+                            },
+                            {
+                              "x": 0.1525,
+                              "y": 0.17
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.17
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "N",
+                            "confidence": 0.8176693
+                          },
+                          {
+                            "text": "a",
+                            "confidence": 0.8177018
+                          },
+                          {
+                            "text": "t",
+                            "confidence": 0.8071438
+                          },
+                          {
+                            "text": "i",
+                            "confidence": 0.8278219
+                          },
+                          {
+                            "text": "o",
+                            "confidence": 0.8259974
+                          },
+                          {
+                            "text": "n",
+                            "confidence": 0.8156133
+                          },
+                          {
+                            "text": "a",
+                            "confidence": 0.8077017
+                          },
+                          {
+                            "text": "l",
+                            "confidence": 0.8241393
+                          },
+                          {
+                            "text": "i",
+                            "confidence": 0.8164626
+                          },
+                          {
+                            "text": "t",
+                            "confidence": 0.8214819
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8167041,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8180397
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.1575,
+                              "y": 0.158
+                            },
+                            {
+                              "x": 0.165,
+                              "y": 0.158
+                            },
+                            {
+                              "x": 0.165,
+                              "y": 0.17
+                            },
+                            {
+                              "x": 0.1575,
+                              "y": 0.17
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": ":",
+                            "confidence": 0.8112888,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8112888
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.17,
+                              "y": 0.158
+                            },
+                            {
+                              "x": 0.2375,
+                              "y": 0.158
+                            },
+                            {
+                              "x": 0.2375,
+                              "y": 0.17
+                            },
+                            {
+                              "x": 0.17,
+                              "y": 0.17
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "F",
+                            "confidence": 0.8241987
+                          },
+                          {
+                            "text": "r",
+                            "confidence": 0.8275456
+                          },
+                          {
+                            "text": "a",
+                            "confidence": 0.8106058
+                          },
+                          {
+                            "text": "n",
+                            "confidence": 0.8176791
+                          },
+                          {
+                            "text": "c",
+                            "confidence": 0.8138225
+                          },
+                          {
+                            "text": "a",
+                            "confidence": 0.826203
+                          },
+                          {
+                            "text": "i",
+                            "confidence": 0.8166895
+                          },
+                          {
+                            "text": "s",
+                            "confidence": 0.8252245
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8248726,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8207601
+                      }
+                    ],
+                    "confidence": 0.8166962
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8166962
+              },
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.191
+                    },
+                    {
+                      "x": 0.185,
+                      "y": 0.191
+                    },
+                    {
+                      "x": 0.185,
+                      "y": 0.203
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.203
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.191
+                        },
+                        {
+                          "x": 0.185,
+                          "y": 0.191
+                        },
+                        {
+                          "x": 0.185,
+                          "y": 0.203
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.203
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.191
+                            },
+                            {
+                              "x": 0.0775,
+                              "y": 0.191
+                            },
+                            {
+                              "x": 0.0775,
+                              "y": 0.203
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.203
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "N",
+                            "confidence": 0.8113537,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8113537
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.0825,
+                              "y": 0.191
+                            },
+                            {
+                              "x": 0.18,
+                              "y": 0.191
+                            },
+                            {
+                              "x": 0.18,
+                              "y": 0.203
+                            },
+                            {
+                              "x": 0.0825,
+                              "y": 0.203
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "0",
+                            "confidence": 0.8231701
+                          },
+                          {
+                            "text": "8",
+                            "confidence": 0.8145437
+                          },
+                          {
+                            "text": "0",
+                            "confidence": 0.8264877
+                          },
+                          {
+                            "text": "1",
+                            "confidence": 0.816678
+                          },
+                          {
+                            "text": "2",
+                            "confidence": 0.8238726
+                          },
+                          {
+                            "text": "3",
+                            "confidence": 0.8115053
+                          },
+                          {
+                            "text": "4",
+                            "confidence": 0.8118668
+                          },
+                          {
+                            "text": "5",
+                            "confidence": 0.8184996
+                          },
+                          {
+                            "text": "6",
+                            "confidence": 0.8279748
+                          },
+                          {
+                            "text": "7",
+                            "confidence": 0.8162617
+                          },
+                          {
+                            "text": "8",
+                            "confidence": 0.8084177
+                          },
+                          {
+                            "text": "9",
+                            "confidence": 0.8173874
+                          },
+                          {
+                            "text": "0",
+                            "confidence": 0.8129379,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8176618
+                      }
+                    ],
+                    "confidence": 0.8145077
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8145077
+              },
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.206
+                    },
+                    {
+                      "x": 0.2475,
+                      "y": 0.206
+                    },
+                    {
+                      "x": 0.2475,
+                      "y": 0.218
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.218
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.206
+                        },
+                        {
+                          "x": 0.2475,
+                          "y": 0.206
+                        },
+                        {
+                          "x": 0.2475,
+                          "y": 0.218
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.218
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.206
+                            },
+                            {
+                              "x": 0.13,
+                              "y": 0.206
+                            },
+                            {
+                              "x": 0.13,
+                              "y": 0.218
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.218
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "D",
+                            "confidence": 0.8176941
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8174989
+                          },
+                          {
+                            "text": "l",
+                            "confidence": 0.8154729
+                          },
+                          {
+                            "text": "i",
+                            "confidence": 0.8124009
+                          },
+                          {
+                            "text": "v",
+                            "confidence": 0.809339
+                          },
+                          {
+                            "text": "r",
+                            "confidence": 0.8210425
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8181513
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8103719,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8152464
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.135,
+                              "y": 0.206
+                            },
+                            {
+                              "x": 0.15,
+                              "y": 0.206
+                            },
+                            {
+                              "x": 0.15,
+                              "y": 0.218
+                            },
+                            {
+                              "x": 0.135,
+                              "y": 0.218
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "l",
+                            "confidence": 0.8228375
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8060039,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8144207
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.155,
+                              "y": 0.206
+                            },
+                            {
+                              "x": 0.1625,
+                              "y": 0.206
+                            },
+                            {
+                              "x": 0.1625,
+                              "y": 0.218
+                            },
+                            {
+                              "x": 0.155,
+                              "y": 0.218
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": ":",
+                            "confidence": 0.8221282,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8221282
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.1675,
+                              "y": 0.206
+                            },
+                            {
+                              "x": 0.2425,
+                              "y": 0.206
+                            },
+                            {
+                              "x": 0.2425,
+                              "y": 0.218
+                            },
+                            {
+                              "x": 0.1675,
+                              "y": 0.218
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "1",
+                            "confidence": 0.8212202
+                          },
+                          {
+                            "text": "0",
+                            "confidence": 0.8236624
+                          },
+                          {
+                            "text": "/",
+                            "confidence": 0.8138798
+                          },
+                          {
+                            "text": "0",
+                            "confidence": 0.8202648
+                          },
+                          {
+                            "text": "4",
+                            "confidence": 0.8238772
+                          },
+                          {
+                            "text": "/",
+                            "confidence": 0.8275588
+                          },
+                          {
+                            "text": "2",
+                            "confidence": 0.8163926
+                          },
+                          {
+                            "text": "0",
+                            "confidence": 0.8058515
+                          },
+                          {
+                            "text": "0",
+                            "confidence": 0.8165527
+                          },
+                          {
+                            "text": "9",
+                            "confidence": 0.8185741,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8187834
+                      }
+                    ],
+                    "confidence": 0.8176447
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8176447
+              },
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.221
+                    },
+                    {
+                      "x": 0.2325,
+                      "y": 0.221
+                    },
+                    {
+                      "x": 0.2325,
+                      "y": 0.233
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.233
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.221
+                        },
+                        {
+                          "x": 0.2325,
+                          "y": 0.221
+                        },
+                        {
+                          "x": 0.2325,
+                          "y": 0.233
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.233
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.221
+                            },
+                            {
+                              "x": 0.115,
+                              "y": 0.221
+                            },
+                            {
+                              "x": 0.115,
+                              "y": 0.233
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.233
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "E",
+                            "confidence": 0.8250031
+                          },
+                          {
+                            "text": "x",
+                            "confidence": 0.8251064
+                          },
+                          {
+                            "text": "p",
+                            "confidence": 0.815127
+                          },
+                          {
+                            "text": "i",
+                            "confidence": 0.8170969
+                          },
+                          {
+                            "text": "r",
+                            "confidence": 0.8155093
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8216162,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8199098
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.12,
+                              "y": 0.221
+                            },
+                            {
+                              "x": 0.135,
+                              "y": 0.221
+                            },
+                            {
+                              "x": 0.135,
+                              "y": 0.233
+                            },
+                            {
+                              "x": 0.12,
+                              "y": 0.233
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "l",
+                            "confidence": 0.8144295
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.82006,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8172447
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.14,
+                              "y": 0.221
+                            },
+                            {
+                              "x": 0.1475,
+                              "y": 0.221
+                            },
+                            {
+                              "x": 0.1475,
+                              "y": 0.233
+                            },
+                            {
+                              "x": 0.14,
+                              "y": 0.233
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": ":",
+                            "confidence": 0.8085503,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8085503
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.1525,
+                              "y": 0.221
+                            },
+                            {
+                              "x": 0.2275,
+                              "y": 0.221
+                            },
+                            {
+                              "x": 0.2275,
+                              "y": 0.233
+                            },
+                            {
+                              "x": 0.1525,
+                              "y": 0.233
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "1",
+                            "confidence": 0.8157983
+                          },
+                          {
+                            "text": "0",
+                            "confidence": 0.8272917
+                          },
+                          {
+                            "text": "/",
+                            "confidence": 0.8127869
+                          },
+                          {
+                            "text": "0",
+                            "confidence": 0.8209322
+                          },
+                          {
+                            "text": "4",
+                            "confidence": 0.8199462
+                          },
+                          {
+                            "text": "/",
+                            "confidence": 0.8245906
+                          },
+                          {
+                            "text": "2",
+                            "confidence": 0.8246039
+                          },
+                          {
+                            "text": "0",
+                            "confidence": 0.8247649
+                          },
+                          {
+                            "text": "1",
+                            "confidence": 0.8137402
+                          },
+                          {
+                            "text": "9",
+                            "confidence": 0.8122832,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8196738
+                      }
+                    ],
+                    "confidence": 0.8163447
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8163447
+              },
+              {
+                "boundingBox": {
+                  "normalizedVertices": [
+                    {
+                      "x": 0.07,
+                      "y": 0.236
+                    },
+                    {
+                      "x": 0.2825,
+                      "y": 0.236
+                    },
+                    {
+                      "x": 0.2825,
+                      "y": 0.248
+                    },
+                    {
+                      "x": 0.07,
+                      "y": 0.248
+                    }
+                  ]
+                },
+                "paragraphs": [
+                  {
+                    "boundingBox": {
+                      "normalizedVertices": [
+                        {
+                          "x": 0.07,
+                          "y": 0.236
+                        },
+                        {
+                          "x": 0.2825,
+                          "y": 0.236
+                        },
+                        {
+                          "x": 0.2825,
+                          "y": 0.248
+                        },
+                        {
+                          "x": 0.07,
+                          "y": 0.248
+                        }
+                      ]
+                    },
+                    "words": [
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.07,
+                              "y": 0.236
+                            },
+                            {
+                              "x": 0.145,
+                              "y": 0.236
+                            },
+                            {
+                              "x": 0.145,
+                              "y": 0.248
+                            },
+                            {
+                              "x": 0.07,
+                              "y": 0.248
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "P",
+                            "confidence": 0.8215305
+                          },
+                          {
+                            "text": "r",
+                            "confidence": 0.8224662
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8250648
+                          },
+                          {
+                            "text": "f",
+                            "confidence": 0.8058257
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8065737
+                          },
+                          {
+                            "text": "c",
+                            "confidence": 0.8195167
+                          },
+                          {
+                            "text": "t",
+                            "confidence": 0.8261814
+                          },
+                          {
+                            "text": "u",
+                            "confidence": 0.8279408
+                          },
+                          {
+                            "text": "r",
+                            "confidence": 0.8221756
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8149813,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8192257
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.15,
+                              "y": 0.236
+                            },
+                            {
+                              "x": 0.165,
+                              "y": 0.236
+                            },
+                            {
+                              "x": 0.165,
+                              "y": 0.248
+                            },
+                            {
+                              "x": 0.15,
+                              "y": 0.248
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "d",
+                            "confidence": 0.8072642
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8195762,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8134202
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.17,
+                              "y": 0.236
+                            },
+                            {
+                              "x": 0.215,
+                              "y": 0.236
+                            },
+                            {
+                              "x": 0.215,
+                              "y": 0.248
+                            },
+                            {
+                              "x": 0.17,
+                              "y": 0.248
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "P",
+                            "confidence": 0.8250693
+                          },
+                          {
+                            "text": "o",
+                            "confidence": 0.8152046
+                          },
+                          {
+                            "text": "l",
+                            "confidence": 0.820962
+                          },
+                          {
+                            "text": "i",
+                            "confidence": 0.8257788
+                          },
+                          {
+                            "text": "c",
+                            "confidence": 0.8060578
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8233113,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8193973
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.22,
+                              "y": 0.236
+                            },
+                            {
+                              "x": 0.235,
+                              "y": 0.236
+                            },
+                            {
+                              "x": 0.235,
+                              "y": 0.248
+                            },
+                            {
+                              "x": 0.22,
+                              "y": 0.248
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "d",
+                            "confidence": 0.8117475
+                          },
+                          {
+                            "text": "e",
+                            "confidence": 0.8136213,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "SPACE"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8126844
+                      },
+                      {
+                        "property": {
+                          "detectedLanguages": [
+                            {
+                              "languageCode": "fr",
+                              "confidence": 1
+                            }
+                          ]
+                        },
+                        "boundingBox": {
+                          "normalizedVertices": [
+                            {
+                              "x": 0.24,
+                              "y": 0.236
+                            },
+                            {
+                              "x": 0.2775,
+                              "y": 0.236
+                            },
+                            {
+                              "x": 0.2775,
+                              "y": 0.248
+                            },
+                            {
+                              "x": 0.24,
+                              "y": 0.248
+                            }
+                          ]
+                        },
+                        "symbols": [
+                          {
+                            "text": "P",
+                            "confidence": 0.8083481
+                          },
+                          {
+                            "text": "a",
+                            "confidence": 0.8172168
+                          },
+                          {
+                            "text": "r",
+                            "confidence": 0.8180163
+                          },
+                          {
+                            "text": "i",
+                            "confidence": 0.8232279
+                          },
+                          {
+                            "text": "s",
+                            "confidence": 0.8089096,
+                            "property": {
+                              "detectedBreak": {
+                                "type": "LINE_BREAK"
+                              }
+                            }
+                          }
+                        ],
+                        "confidence": 0.8151437
+                      }
+                    ],
+                    "confidence": 0.8159743
+                  }
+                ],
+                "blockType": "TEXT",
+                "confidence": 0.8159743
+              }
+            ],
+            "confidence": 0.8168481
+          }
+        ],
+        "text": "REPUBLIQUE FRANCAISE\nCARTE NATIONALE D'IDENTITE\n\nNom : MOREAU\nPrenom(s) : Jean-Pierre\nSexe : M    Taille : 1,78 m\nNe(e) le : 15/03/1958\na : Paris (75)\nNationalite : Francaise\n\nN  0801234567890\nDelivree le : 10/04/2009\nExpire le : 10/04/2019\nPrefecture de Police de Paris"
+      },
+      "context": {
+        "uri": "gs://notarial-bucket/dossier_1/scan_id_001_v2.pdf",
+        "pageNumber": 1
+      }
+    }
+  ]
+}

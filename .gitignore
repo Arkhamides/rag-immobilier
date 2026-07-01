@@ -1,0 +1,17 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+
+# Generated artifacts (profiles + embeddings — rebuilt at startup)
+data/
+
+# OS
+.DS_Store
