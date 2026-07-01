@@ -1,5 +1,33 @@
 # Agentic Design
 
+
+## Pre Processing
+
+### Chunking
+- Done at ingestion in parser.py — strategy depends on doc type, not a uniform splitter.
+- compromis — regex split on section headers (LE(S) VENDEUR(S), L(ES) ACQUEREUR(S), ARTICLE N —) → ~15 chunks per doc.
+- dpe — split on all-caps lines ≥ 5 chars → ~5 chunks per doc.
+identite / domicile — always one chunk per doc (short single-topic docs gain nothing from splitting).
+- Fallback cascade (compromis/dpe only, if headers match nothing): OCR block boundaries → whole document as one chunk.
+- Each chunk carries a stable, human-readable ID (dossier_1/compromis#VENDEUR) used as the citation unit, plus mean OCR confidence.
+- Rationale: section-level chunks give precise citations and better targeted retrieval; revisit (add overlap) only if cross-section context gets lost.
+### Hybrid search
+- Lives in hybrid_search() in engine.py, called only by the search_documents tool. Three stages:
+1. Parallel retrieval — cosine similarity (normalized embeddings, numpy dot product) and BM25 each independently rank the same filtered chunk set.
+2. RRF fusion — top-15 from each list, unioned, scored 1/(60 + cosine_rank) + 1/(60 + bm25_rank) (60 is the standard constant from the RRF paper).
+3. Cross-encoder rerank — mmarco-mMiniLMv2 scores each (query, chunk_text) pair jointly, re-sorts, returns top-5.
+relevance_score = sigmoid of the cross-encoder logit (0–1), better calibrated than raw cosine; the best score per request becomes the retrieval_relevance metric.
+Why hybrid: cosine alone misses exact lexical matches (article numbers, proper names, legal codes) — BM25 catches those.
+Cost: cross-encoder adds ~50–150 ms on CPU; acceptable at 76 chunks, and the swap-to-lighter-model path is noted if latency ever matters.
+Supports optional metadata filters (dossier, doc_type) applied before ranking.
+
+### Embedding
+Embeddings give the system semantic search — the ability to match a query to chunks by meaning rather than by exact words. That matters here for a few specific reasons:
+
+- Users don't phrase questions in the document's words. A notary asks "quel est le prix de vente?" but the compromis might say "moyennant le prix principal de 285 000 euros". There's no shared keyword to match on — but in embedding space, the query vector and that chunk's vector land close together because they're about the same thing.
+- The corpus is OCR'd, so exact text is unreliable. Scanned documents contain corruption ("CARTE MATIONALE"). Keyword matching breaks on garbled tokens; embeddings degrade gracefully because the surrounding context still places the chunk in roughly the right semantic neighborhood.
+- French morphology and paraphrase. "Vendeur", "le cédant", "la partie venderesse" — a multilingual embedding model maps these near each other without anyone maintaining a synonym list.
+
 ## Pattern: ReWoo (Reasoning Without Observation)
 
 ### Why ReWoo over ReAct
