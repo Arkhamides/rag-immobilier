@@ -15,11 +15,11 @@ router = APIRouter(tags=["chat"])
 
 # Price per 1M tokens (USD). Used for cost estimation.
 _PRICE_PER_1M: dict[str, dict[str, float]] = {
+    "claude-sonnet-4-6": {"input": 3.0, "output": 15.0},
+    "claude-opus-4-8": {"input": 5.0, "output": 25.0},
+    "claude-haiku-4-5-20251001": {"input": 1.0, "output": 5.0},
     "anthropic/claude-sonnet-4.5": {"input": 3.0, "output": 15.0},
     "anthropic/claude-3-5-sonnet": {"input": 3.0, "output": 15.0},
-    "anthropic/claude-3-haiku": {"input": 0.25, "output": 1.25},
-    "openai/gpt-4o": {"input": 2.5, "output": 10.0},
-    "openai/gpt-4o-mini": {"input": 0.15, "output": 0.6},
 }
 _DEFAULT_PRICE = {"input": 3.0, "output": 15.0}
 
@@ -93,10 +93,10 @@ def chat(body: ChatRequest, request: Request) -> dict:
         latency_ms = profiler.total_ms
 
         # Aggregate token counts from both LLM calls
-        planner_input = getattr(planner_usage, "prompt_tokens", 0) or 0
-        planner_output = getattr(planner_usage, "completion_tokens", 0) or 0
-        solver_input = getattr(solver_usage, "prompt_tokens", 0) or 0
-        solver_output = getattr(solver_usage, "completion_tokens", 0) or 0
+        planner_input = getattr(planner_usage, "input_tokens", 0) or 0
+        planner_output = getattr(planner_usage, "output_tokens", 0) or 0
+        solver_input = getattr(solver_usage, "input_tokens", 0) or 0
+        solver_output = getattr(solver_usage, "output_tokens", 0) or 0
         total_input = planner_input + solver_input
         total_output = planner_output + solver_output
         cost_usd = _estimate_cost(total_input, total_output, settings.llm_model)
@@ -232,10 +232,10 @@ def chat_stream(body: ChatRequest, request: Request) -> StreamingResponse:
 
             latency_ms = profiler.total_ms
 
-            planner_input = getattr(planner_usage, "prompt_tokens", 0) or 0
-            planner_output = getattr(planner_usage, "completion_tokens", 0) or 0
-            solver_input = getattr(solver_usage, "prompt_tokens", 0) or 0
-            solver_output = getattr(solver_usage, "completion_tokens", 0) or 0
+            planner_input = getattr(planner_usage, "input_tokens", 0) or 0
+            planner_output = getattr(planner_usage, "output_tokens", 0) or 0
+            solver_input = getattr(solver_usage, "input_tokens", 0) or 0
+            solver_output = getattr(solver_usage, "output_tokens", 0) or 0
             total_input = planner_input + solver_input
             total_output = planner_output + solver_output
             cost_usd = _estimate_cost(total_input, total_output, settings.llm_model)

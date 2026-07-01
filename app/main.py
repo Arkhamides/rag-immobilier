@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from openai import OpenAI
+import anthropic
 
 from app.api.routes import chat, metrics
 from app.core.config import settings
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    client = OpenAI(api_key=settings.openai_api_key, base_url=settings.openai_base_url)
+    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
 
     chunks = load_chunks(settings.documents_path)
     logger.info("Parser: %d chunks loaded", len(chunks))

@@ -6,8 +6,7 @@ import re
 from collections.abc import Generator
 from typing import Any
 
-from openai import OpenAI
-from openai.types.completion_usage import CompletionUsage
+import anthropic
 
 from app.core.config import settings
 from app.ingestion.parser import Chunk
@@ -123,10 +122,10 @@ def solve(
     query: str,
     tool_results: list[dict],
     chunks: list[Chunk],
-    client: OpenAI,
+    client: anthropic.Anthropic,
     history: list[dict] | None = None,
     parent_span: Any = None,
-) -> tuple[str, list[dict], CompletionUsage | None]:
+) -> tuple[str, list[dict], Any]:
     """
     Synthesizes a final answer from tool results.
     Returns (answer, sources, usage).
@@ -136,7 +135,7 @@ def solve(
     context = _format_tool_results(tool_results)
     user_content = f"Question : {query}\n\n=== Résultats des outils ===\n\n{context}\nRéponds à la question en citant les sources pertinentes."
 
-    messages: list[dict] = [{"role": "system", "content": _SYSTEM}]
+    messages: list[dict] = []
     if history:
         messages.extend(history)
     messages.append({"role": "user", "content": user_content})
@@ -149,21 +148,23 @@ def solve(
         input=messages,
     ) if parent_span is not None else None
 
-    response = client.chat.completions.create(
+    response = client.messages.create(
         model=settings.llm_model,
+        system=_SYSTEM,
         messages=messages,
+        max_tokens=4096,
         temperature=0,
     )
 
-    answer = response.choices[0].message.content or ""
+    answer = response.content[0].text if response.content else ""
 
     if gen is not None:
         usage = response.usage
         gen.update(
             output=answer,
             usage_details={
-                "input": getattr(usage, "prompt_tokens", 0) or 0,
-                "output": getattr(usage, "completion_tokens", 0) or 0,
+                "input": getattr(usage, "input_tokens", 0) or 0,
+                "output": getattr(usage, "output_tokens", 0) or 0,
             },
         )
         gen.end()
@@ -178,7 +179,7 @@ def solve_stream(
     query: str,
     tool_results: list[dict],
     chunks: list[Chunk],
-    client: OpenAI,
+    client: anthropic.Anthropic,
     history: list[dict] | None = None,
     parent_span: Any = None,
 ) -> Generator[tuple, None, None]:
@@ -192,7 +193,7 @@ def solve_stream(
     context = _format_tool_results(tool_results)
     user_content = f"Question : {query}\n\n=== Résultats des outils ===\n\n{context}\nRéponds à la question en citant les sources pertinentes."
 
-    messages: list[dict] = [{"role": "system", "content": _SYSTEM}]
+    messages: list[dict] = []
     if history:
         messages.extend(history)
     messages.append({"role": "user", "content": user_content})
@@ -205,31 +206,29 @@ def solve_stream(
         input=messages,
     ) if parent_span is not None else None
 
-    response = client.chat.completions.create(
-        model=settings.llm_model,
-        messages=messages,
-        temperature=0,
-        stream=True,
-        stream_options={"include_usage": True},
-    )
-
     full_answer = ""
     usage = None
-    for chunk in response:
-        if chunk.choices:
-            delta = chunk.choices[0].delta.content or ""
-            if delta:
-                full_answer += delta
-                yield ("delta", delta)
-        if chunk.usage:
-            usage = chunk.usage
+
+    with client.messages.stream(
+        model=settings.llm_model,
+        system=_SYSTEM,
+        messages=messages,
+        max_tokens=4096,
+        temperature=0,
+    ) as stream:
+        for text in stream.text_stream:
+            if text:
+                full_answer += text
+                yield ("delta", text)
+        message = stream.get_final_message()
+        usage = message.usage
 
     if gen is not None:
         gen.update(
             output=full_answer,
             usage_details={
-                "input": getattr(usage, "prompt_tokens", 0) or 0,
-                "output": getattr(usage, "completion_tokens", 0) or 0,
+                "input": getattr(usage, "input_tokens", 0) or 0,
+                "output": getattr(usage, "output_tokens", 0) or 0,
             },
         )
         gen.end()

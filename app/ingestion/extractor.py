@@ -4,7 +4,7 @@ import json
 import logging
 from pathlib import Path
 
-from openai import OpenAI
+import anthropic
 
 from app.core.config import settings
 from app.ingestion.parser import Chunk
@@ -88,20 +88,21 @@ def _parse_llm_json(content: str) -> dict:
     return json.loads(content.strip())
 
 
-def _extract_one(doc_type: str, text: str, client: OpenAI) -> dict:
-    response = client.chat.completions.create(
+def _extract_one(doc_type: str, text: str, client: anthropic.Anthropic) -> dict:
+    response = client.messages.create(
         model=settings.llm_model,
+        system=_SYSTEM,
         messages=[
-            {"role": "system", "content": _SYSTEM},
             {"role": "user", "content": _PROMPTS[doc_type].format(text=text)},
         ],
+        max_tokens=2048,
         temperature=0,
     )
-    return _parse_llm_json(response.choices[0].message.content)
+    return _parse_llm_json(response.content[0].text)
 
 
 def load_or_extract_profiles(
-    chunks: list[Chunk], data_path: str, client: OpenAI
+    chunks: list[Chunk], data_path: str, client: anthropic.Anthropic
 ) -> dict[str, dict]:
     """
     Returns profiles keyed by "dossier_{n}/{stem}".
